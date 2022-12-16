@@ -2,16 +2,7 @@
 {% load humanize %}
 {% block css %}
     {% load static %}
-    <script src="{% static 'js/base.js'%}"></script>
-	<script src="{% static 'js/base2.js'%}"></script>
-	<script src="{% static 'js/base3.js'%}"></script>
     <link rel="stylesheet" href="{% static 'css/cars.css' %}">
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-
-
-
 {% endblock %}
 
 {% block title %}
@@ -20,25 +11,21 @@
 
 {% block content %}
 
-<div class="container-fluid">
-  <div class="px-lg-5 mt-5 ">
+  <div class="container-fluid px-lg-5 mt-5 ">
     <div class="row">
 {% for car in cars %}
       <!-- Gallery item -->
       <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-        <div class="bg-white rounded shadow-sm">
+        <div class="bg-white rounded shadow-sm text-center">
             <a href="/samochod/{{car.id}}/">
             <img src ='../media/{{car.foto}}' alt="" class="rounded" data-target="#image-gallery" height="100px" max-width="100%">
             </a>
           <div class="p-4">
             <h5> <a href="/samochod/{{car.id}}/" class="text-dark">{{car.marka}} {{car.model}} </a></h5>
-              <p>{{car.paliwo}} {{car.silnik}}</p>
+              <p>{{car.paliwo}} {{car.silnik}} {{car.kod_silnika|default_if_none:" "|upper}} / {{car.get_year}}r.</p>
               <p class="red">{{ car.cena|intcomma }} zł</p>
-            <p class="small text-muted mb-0">{{car.opis}}</p>
-
-            <div class="d-flex align-items-center justify-content-between rounded-pill bg-light px-3 py-2 mt-4">
-              <p class="small mb-0"><i class="fa fa-picture-o mr-2"></i><span class="font-weight-bold">{{car.get_year}} r.</span></p>
-              <div class="badge badge-danger px-3 rounded-pill font-weight-normal">New</div>
+            <div class=" d-flex align-items-center justify-content-center rounded-pill bg-light px-1 py-1 mt-1">
+              <p class="small mb-0"><i class="fa fa-picture-o mr-2"></i><span class="font-weight-bold">{{ car.opis|truncatewords:6 }}</span></p>
             </div>
           </div>
         </div>
@@ -48,9 +35,8 @@
 
 
     </div>
-<!--    <div class="py-5 text-right"><a href="#" class="btn btn-dark px-5 py-3 text-uppercase">Show me more</a></div>-->
   </div>
-</div>
+
 
 
 {% endblock %}

@@ -1,0 +1,12 @@
+{% load humanize %}
+
+<div class="card shadow-sm">
+     <div class="carDetails mt-3 mb-1" >
+        <p><a href="/samochod/{{car.id}}"> {{car.marka}} {{car.model}}</a> - {{ car.get_year}} r. </p>
+    </div>
+    <div class="carPhoto mb-3 ">
+        <a href="/samochod/{{car.id}}"> <img src = '/media/{{car.foto}}' class="rounded " height="100px" max-width="100%"/></a>
+    </div>
+    <p class="red">{{ car.cena|intcomma }} zł</p>
+</div>
+
