@@ -1,0 +1,19 @@
+{% load humanize %}
+
+<!-- Gallery item -->
+      <div class="col-xl-3 col-lg-4 col-md-6 mb-4 mt-5">
+        <div class="bg-white rounded shadow-sm text-center">
+            <a href="/samochod/{{car.id}}/">
+            <img src ='../media/{{car.foto}}' alt="" class="rounded" data-target="#image-gallery" height="100px" max-width="100%">
+            </a>
+          <div class="p-4">
+            <h5> <a href="/samochod/{{car.id}}/" class="text-dark">{{car.marka}} {{car.model}} </a></h5>
+              <p>{{car.paliwo}} {{car.silnik}} {{car.kod_silnika|default_if_none:" "|upper}} / {{car.get_year}}r.</p>
+              <p class="red">{{ car.cena|intcomma }} zł</p>
+            <div class=" d-flex align-items-center justify-content-center rounded-pill bg-light px-1 py-1 mt-1">
+              <p class="small mb-0"><i class="fa fa-picture-o mr-2"></i><span class="font-weight-bold">{{ car.opis|truncatewords:6 }}</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End -->

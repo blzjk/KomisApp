@@ -1,4 +1,5 @@
 import django_filters
+from crispy_forms.layout import Div, Field
 from django_filters import CharFilter
 
 from .models import Samochod
@@ -14,11 +15,11 @@ class CarFilter(django_filters.FilterSet):
     class Meta:
         model = Samochod
         fields = {
-            'marka': ['exact'],
             'model': ['icontains'],
+            'marka': ['exact'],
+            'kolor': ['exact'],
             'typ': ['exact'],
             'paliwo': ['exact'],
-            'kolor': ['exact'],
             'naped': ['exact'],
             'cena': ['lt', 'gt'],
             'opis': ['contains'],

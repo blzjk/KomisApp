@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+ <div class="container">
+     <h3>Skontaktuj sie z nami</h3>
+     <form method="post">
+         {% csrf_token %}
+         {% for field in form%}
+             <div class="form-group">
+                 {{field.label_tag}}
+                 {{field}}
+                 {{field.errors}}
+             </div>
+         {% endfor %}
+
+         <button type="submit" class="btn btn-primary">
+              <a href="/kontakt">Submit</a>
+         </button>
+    </form>
+ </div>
+{%endblock%}
