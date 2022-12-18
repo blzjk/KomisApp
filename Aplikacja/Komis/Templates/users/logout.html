@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+<script src="{% static 'js/index1.js'%}"></script>
+<script src="{% static 'js/index2.js'%}"></script>
+
+{% block title %}
+<title>Aut-Ko Wylogowanie</title>
+{% endblock %}
+
+{% block content %}
+
+    <div class="content container">
+       <div class="section wf-section">
+    <div class="h3"> Zostałeś pomyślnie wylogowany. <br>‍<br>‍<br>
+        <p>Możesz <a href="{% url 'logowanie' %}">zalogować się ponownie</a> lub przejść na <a href="/"> stronę główną</a> </p>
+    </div>
+</div>
+    </div>
+
+{% endblock %}

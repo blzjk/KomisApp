@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Rejestracja{% endblock %}
+
+{% block title %}
+<title>Aut-Ko Rejestracja</title>
+{% endblock %}
+
+{% block content %}
+<h1>Rejestracja</h1>
+<div>
+  <form method="POST">
+    {% load crispy_forms_tags %}
+    {% csrf_token %}
+    {{ form | crispy }}
+    <input type = "submit" value="Zarejestruj">
+  </form>
+</div>
+<div>
+  {{ form.errors }}
+Posiadasz już konto? <a href="{% url 'logowanie' %}">Zaloguj</a>
+</div>
+{% endblock %}

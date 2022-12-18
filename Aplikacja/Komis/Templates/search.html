@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block title %}
+<title>Aut-Ko Wyszukiwarka</title>
+{% endblock %}
+
+{% block content %}
+<div class = "row bg-light m-3">
+    <div class = "col-sm-3 p-5">
+
+
+        <form method="get">
+            {% for field in car_filter.form %}
+
+      {% if field.name == 'model' %}
+          {{ field|add_class:"form-control-lg"|as_crispy_field }}
+      {% elif field.field.widget.input_type == 'select' %}
+          {{ field|add_class:"form-control-sm"|add_class:"mt-1 "|as_crispy_field }}
+      {% else %}
+          {{ field|add_class:""|as_crispy_field }}
+      {% endif %}
+    {% endfor %}
+
+            <button class="btn btn-lg btn-danger mt-3 px-5 py-1" type="submit">Szukaj</button>
+        </form>
+
+
+
+    </div>
+    <div class = "col-sm-9">
+        <div class="album py-1 bg-light mt-5">
+            <div class="container-fluid">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 p-1">
+                    {% for car in car_filter.qs %}
+                    <div class="col">
+                        {% include "car_card.html" %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

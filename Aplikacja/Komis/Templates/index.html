@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/index1.css' %}">
+    <script src="{% static 'js/index1.js'%}"></script>
+    <script src="{% static 'js/index2.js'%}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+{% endblock %}
+<head>
+	<style>.wf-force-outline-none[tabindex="-1"]:focus{outline:none;}</style>
+	<meta charset="utf-8">
+    <title>Auto Komis AUT-KO</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta content="Aut-Ko" property="og:title">
+	<meta content="Aut-Ko" property="twitter:title">
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+</head>
+
+
+
+
+<body class="body">
+<div class="div-image-nav">
+	<img src="../static/car-nav-jpg/car.jpg" loading="lazy" srcset="../static/car-nav-jpg/car-p-500.jpg 500w, ../static/car-nav-jpg/car-p-800.jpg 800w, ../static/car-nav-jpg/car-p-1080.jpg 1080w, ../static/car-nav-jpg/car-p-1600.jpg 1600w, ../static/car-nav-jpg/car-p-2000.jpg 2000w, ../static/car-nav-jpg/car-p-2600.jpg 2600w, ../static/car-nav-jpg/car-p-3200.jpg 3200w" sizes="100vw" alt="" class="image-nav-car img-fluid" width="2008">
+	<div class="div-block">
+			<div id="w-node-_0c6f4c19-95cf-ee07-0d3a-a11c8db0ba74-0976ac3b" class="div-block-heading">
+			<h2 class="base-heading">Auto <br>Komis <br></h2>
+			<h1 class="base-heading baseheading2">AUT-KO</h1>
+				<p class="count-car">Aż {{ liczba }} aut dostępnych od ręki!</p>
+			</div>
+		<div data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="navbar-logo-center-container shadow-three w-nav">
+			<div class="navbar-wrapper-three">
+				<div class="navbar-logo-center wf-section"></div>
+				<nav role="navigation" class="nav-menu-wrapper-three w-nav-menu" style="transform: translateY(0px) translateX(0px);">
+					<div class="nav-menu-three">
+						<a href="szukaj"/>
+							<img src="../static/car-search/car-search.png" loading="lazy" srcset="../static/car-search/car-search-p-500.png 500w, ../static/car-search/car-search-p-800.png 800w, ../static/car-search/car-search.png 835w" width="97" sizes="(max-width: 479px) 0px, (max-width: 991px) 100vw, 80px" alt="" class="image-icon-search" width="97"/>
+						</a>
+						<ul role="list" class="nav-menu-block-header w-list-unstyled">
+							<li>
+								<a href="samochody" class="nav-link-1 w-nav-link">Przeglądaj</a>
+							</li>
+							<li>
+								<a href="dodaj_samochod" class="nav-link-1 w-nav-link">Sprzedaj</a>
+							</li>
+							<li>
+								<a href="../../wynajem" class="nav-link-1 w-nav-link">Wynajmij</a>
+							</li>
+
+							{% if user.is_superuser %}
+							<li>
+								<a href="/panel" title="Panel administratora">
+									<img src="../../static/admin-icon.png" width="40" alt="" class="img-admin-icon"/>
+								</a>
+							</li>
+							{% else %}
+							<li>
+								<a href="/kontakt" class="nav-link-1 w-nav-link">Kontakt</a>
+							</li>
+							{% endif %}
+
+							{% if user.is_authenticated %}
+							<li>
+								<a href="wylogowanie" class="button_login w-button"> Wyloguj <i data-feather="log-out"></i></a>
+							{% else %}
+								<a href="logowanie" class="button_login w-button"> Zaloguj </a>
+							</li>
+							{% endif %}
+						</ul>
+
+					</div>
+				</nav>
+			<div class="menu-button-nav w-nav-button" style="-webkit-user-select: text;" aria-label="menu" role="button" tabindex="0" aria-controls="w-nav-overlay-0" aria-haspopup="menu" aria-expanded="false">
+				<div class="icon-2 w-icon-nav-menu"></div>
+			</div>
+		</div>
+			<div class="w-nav-overlay" data-wf-ignore="" id="w-nav-overlay-0" style="display: none;"></div>
+		</div>
+	</div>
+	{% if user.is_authenticated %}
+		<div class="logged-user" >Zalogowany użytkownik: {{ user.username }}</div>
+	{% else %}
+		<div class="logged-user" style="display : none"></div>
+	{% endif %}
+</div>
+
+<div class="text-block-2">Ostatnio dodane auta:</div>
+<div class="container-fluid mt-1">
+<section class="team-slider wf-section">
+	<div class="container-team w-clearfix">
+		<div data-delay="4000" data-animation="slide" class="team-slider-wrapper w-slider" data-autoplay="false" data-easing="ease" data-hide-arrows="false" data-disable-swipe="false" data-autoplay-limit="0" data-nav-spacing="12" data-duration="500" data-infinite="true" role="region" aria-label="carousel">
+			<div class="w-slider-mask" id="w-slider-mask-0">
+
+				{% for car in cars %}
+					<div class="team-slide-wrapper w-slide" aria-label="1 of 6" role="group" style="transform: translateX(0px); opacity: 1;">
+						<div class="team-block ">
+							<a href="/samochod/{{car.id}}/"  class="text-link-arrow w-inline-block " >
+								<img src ='../media/{{car.foto}}' loading="lazy" alt="" class="team-member-image-two rounded mx-auto d-block" height="120" >
+							</a>
+							<div class="team-block-info align-items-center">
+								<h3 class="team-member-name-two">{{car.marka}}<br> {{car.model}}</h3>
+								<p class="team-member-text ">{{car.silnik}} {{car.kod_silnika|default_if_none:" "|upper}} {{car.get_year}}r.</p>
+								<p class="mt-0">{{ car.opis|truncatewords:4 }}</p>
+									<a href="/samochod/{{car.id}}/"  class="text-link-arrow w-inline-block">
+									<div>Sprawdź to auto</div>
+									</a>
+									<div class="arrow-embed w-embed">
+										<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path fill-rule="evenodd" clip-rule="evenodd" d="M11.72 15L16.3472 10.357C16.7732 9.92932 16.7732 9.23603 16.3472 8.80962L11.72 4.16667L10.1776 5.71508L12.9425 8.4889H4.16669V10.6774H12.9425L10.1776 13.4522L11.72 15Z" fill="currentColor"></path>
+										</svg>
+									</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+					<div aria-live="off" aria-atomic="true" class="w-slider-aria-label" data-wf-ignore=""></div>
+			</div>
+			<div class="team-slider-arrow w-slider-arrow-left" role="button" tabindex="0" aria-controls="w-slider-mask-0" aria-label="previous slide">
+				<div class="w-icon-slider-left"></div>
+			</div>
+			<div class="team-slider-arrow w-slider-arrow-right" role="button" tabindex="0" aria-controls="w-slider-mask-0" aria-label="next slide" style="">
+				<div class="w-icon-slider-right"></div>
+			</div>
+			<div class="team-slider-nav w-slider-nav w-slider-nav-invert w-round">
+				<div class="w-slider-dot w-active" data-wf-ignore="" aria-label="Show slide 1 of 2" aria-pressed="true" role="button" tabindex="0" style="margin-left: 12px; margin-right: 12px;"></div>
+				<div class="w-slider-dot" data-wf-ignore="" aria-label="Show slide 2 of 2" aria-pressed="false" role="button" tabindex="-1" style="margin-left: 12px; margin-right: 12px;"></div>
+			</div>
+		</div>
+	</div>
+</section>
+</div>
+</body>
+</html>
+
+

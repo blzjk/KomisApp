@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+{% load static %}
+<html class=" w-mod-js ">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	<link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+{% block css %}
+
+	<script>
+	  $( function() {
+		$( document ).tooltip();
+	  } );
+	  </script>
+{% endblock %}
+
+<head>
+	<style>.wf-force-outline-none[tabindex="-1"]:focus{outline:none;}</style>
+	<meta charset="utf-8">
+	{% block title %}
+    {% endblock %}
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta content="Aut-Ko" property="og:title">
+	<meta content="Aut-Ko" property="twitter:title">
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+</head>
+
+
+<body class="body-3">
+<div class="div2-block-nav">
+	<div data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="navbar w-nav">
+		<div class="container-2 w-container">
+			<nav role="navigation" class="nav-menu w-nav-menu" style="transform: translateY(0px) translateX(0px);">
+				<a href="/szukaj" title="Wyszukaj auto w komisie">
+					<img src="../../static/car-search/car-search.png" loading="lazy" srcset="../../static/car-search/car-search-p-500.png 500w, ../../static/car-search/car-search-p-800.png 800w, ../../static/car-search/car-search.png 835w" width="97" sizes="(max-width: 479px) 0px, (max-width: 991px) 100vw, 80px" alt="" class="image-icon-search" width="97"/>
+				</a>
+				<a href="../../samochody" class="nav-link-2 w-nav-link" style="max-width: 940px;">PRZEGLĄDAJ</a>
+				<a href="../../dodaj_samochod" class="nav-link-3 w-nav-link" style="max-width: 940px;">SPRZEDAJ</a>
+				<a href="../../wynajem" class="nav-link-4 w-nav-link" style="max-width: 940px;">WYNAJMIJ</a>
+
+				{% if user.is_superuser %}
+					<a href="/panel" title="Panel administratora">
+					<img src="../../static/admin-icon.png" width="40" alt="" class="img-admin-icon" />
+					</a>
+				{% else %}
+					<a href="/kontakt" class="nav-link-5 w-nav-link" title="Skontaktuj się z nami">KONTAKT</a>
+				{% endif %}
+
+				{% if user.is_authenticated %}
+					<a href="../../wylogowanie" class="button_login w-button"> Wyloguj </a>
+				{% else %}
+					<a href="../../logowanie" class="button_login w-button"> Zaloguj </a>
+				{% endif %}
+
+			</nav>
+			<div class="menu-button w-nav-button" style="-webkit-user-select: text;" aria-label="menu" role="button" tabindex="0" aria-controls="w-nav-overlay-0" aria-haspopup="menu" aria-expanded="false">
+				<div class="w-icon-nav-menu"></div>
+			</div>
+		</div>
+		<div class="w-nav-overlay" data-wf-ignore="" id="w-nav-overlay-0"></div>
+	</div>
+	<div class="div-block">
+		<img src="https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o.jpg" loading="lazy" srcset="https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-500.jpg 500w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-800.jpg 800w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-1080.jpg 1080w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-1600.jpg 1600w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-2000.jpg 2000w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-2600.jpg 2600w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-3200.jpg 3200w" sizes="100vw" alt="" class="image-7">
+
+		<a href="/" class="text-decoration-none" title="Przejdź na stronę główną"><h1 class="heading-2">Auto Komis</h1></a>
+		<a href="/" class="text-decoration-none" title="Przejdź na stronę główną"><h1 class="base-heading baseheading2">AUT-KO</h1></a>
+
+	</div>
+</div>
+<div class="container-fluid mt-5">
+	{% block content %}
+
+
+
+	{% endblock %}
+</div>
+	<script src="{% static 'js/base.js'%}"></script>
+	<script src="{% static 'js/base2.js'%}"></script>
+	<script src="{% static 'js/base3.js'%}"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+<footer class=" text-center text-white" style="background-color:#2b5a7b;">
+  <!-- Grid container -->
+  <div class="container p-1">
+
+
+
+    <!-- Section: Text -->
+    <section class="mb-1 mt-1 ">
+      <p>
+        Tylko sprawdzone i niezawodne auta używane!
+      </p>
+    </section>
+    <!-- Section: Text -->
+
+  </div>
+  <!-- Grid container -->
+
+  <!-- Copyright -->
+  <div class="text-center p-1" style="background-color: rgba(0, 0, 0, 0.2)">
+    © 2022 Copyright
+  </div>
+  <!-- Copyright -->
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block css %}
+    {% load static %}
+    <script defer src="{% static 'js/theme.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}"  />
+{% endblock %}
+
+
+{% block title %}
+<title>Aut-Ko Dodawanie auta</title>
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="container">
+    <div class="col-3 mx-auto">
+<div class="form-car">
+    {% for car in cars%}
+    {{ car.marka }}
+    {% endfor %}
+        <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% load crispy_forms_tags %}
+            {{ form | crispy}}
+
+            <input type="submit" value="Dodaj" class="btn">
+        </form>
+</div>
+</div>
+    </div>
+
+
+
+<div>
+<input type="file" multiple>
+<label>Title</label>
+<input type="text" id="title" class="form-control">
+<label>Description</label>
+<textarea id="description" class="form-control"></textarea>
+<button type="button" id="saveBtn" class="btn btn-primary mt-4">Save</button>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var files = []
+        FilePond.registerPlugin(FilePondPluginFileValidateSize);
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        FilePond.setOptions({
+            allowMultiple:true,
+            maxFiles:4,
+            maxFileSize: '3MB'
+        })
+        const inputElement = document.querySelector('input[type="file"]');
+        const pond = FilePond.create( inputElement, {
+            acceptedFileTypes:['image/png', 'image/jpeg'],
+            onaddfile: (err, fileItem) => {
+                if (!err) {
+                files.push(fileItem.file)
+                }
+                console.log(files)
+            },
+            onremovefile: (err, fileItem) => {
+                const index = files.indexOf(fileItem.file)
+                if (index > -1) {
+                    files.splice(index, 1)
+                }
+                console.log(files)
+            }
+        } );
+})
+
+</script>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "panel.html" %}
+{% block title %}Witaj{% endblock %}
+
+{% block title %}
+<title>Aut-Ko Konto utworzone</title>
+{% endblock %}
+
+{% block content %}
+ <h1>Witaj, {{ user }}!</h1>
+ <p>Twoje konto zostało utworzone. Możesz się już <a
+href="{% url 'logowanie' %}">zalogować</a>.</p>
+{% endblock %}{% endblock %}

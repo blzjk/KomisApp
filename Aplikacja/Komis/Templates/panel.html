@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block css %}
+	<script src="{% static 'js/base.js'%}"></script>
+	<script src="{% static 'js/base2.js'%}"></script>
+	<script src="{% static 'js/base3.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+{% endblock %}
+
+
+{% block title %}
+<title>Aut-Ko Administracja</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-5">
+<div class="float-left mt-5 text-center"><a href="{% url 'samochod' %}"><button type="button" class="btn btn-primary"> Dodaj auto</button></a>
+<a href="{% url 'haslo' %}"><button type="button" class="btn btn-primary">Zmień hasło</button></a></div>
+
+
+  <div class="px-lg-5 mt-5 ">
+    <div class="row">
+{% for car in cars %}
+      <!-- Gallery item -->
+      <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+        <div class="bg-white rounded shadow-sm text-center">
+            <a href="/samochod/{{car.id}}/">
+            <img src ='../media/{{car.foto}}' alt="" class="rounded mt-2" height="100px" max-width="100%" data-target="#image-gallery">
+            </a>
+          <div class="p-4">
+            <h5> <a href="/samochod/{{car.id}}/" class="text-dark">{{car.marka}} {{car.model}} - {{car.get_year}} r.</a></h5>
+              <p>{{car.paliwo}} {{car.silnik}} {{car.kod_silnika|default_if_none:" "|upper}}</p>
+              <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">Cena</span>
+                  </div>
+                  <input type="text" class="form-control text-center" value = {{ car.cena|intcomma }}>
+                  <div class="input-group-append">
+                      <span class="input-group-text">zł</span>
+                  </div>
+              </div>
+
+              <div class="input-group">
+                  <div class="input-group-prepend ">
+                      <span class="input-group-text">Opis</span>
+                  </div>
+                  <textarea class="form-control">{{car.opis}}</textarea>
+              </div>
+              {% if car.czyWidoczny == True %}
+                 <button type="button" class="btnVisible btn btn-success mt-1" >Widoczny</button>
+              {% else  %}
+                <button type="button" class="btnHide btn btn-danger mt-1" >Niewidoczny</button>
+              {% endif %}
+              {% if car.rezerwacja == True and car.ilosc_dni_rezerwacji > 0 %}
+            <button type="button" class="btnBook btn btn-danger mt-1" >Rezerwacja</button>
+              {% else  %}
+            <button type="button" class="btnNotBook btn btn-secondary mt-1" >Rezerwacja</button>
+               {% endif %}
+            <button type="button" class="btnDelete btn btn-secondary mt-1" >Usuń</button>
+            <button type="button" class="btnSave btn btn-secondary mt-1" >Zapisz</button>
+          </div>
+        </div>
+      </div>
+      <!-- End -->
+{% endfor %}
+
+    </div>
+  </div>
+
+
+
+{% for page in pagecount %}
+        <span><a href="{% url 'strona' page|add:'1'%}">{{ page|add:'1' }}</a></span>
+    {% endfor %}
+    <script src="{% static 'js/panel.js'%}"></script>
+{% endblock %}
+
+
+

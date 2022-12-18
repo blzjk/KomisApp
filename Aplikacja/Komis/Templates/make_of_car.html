@@ -1,0 +1,16 @@
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<center><h3>
+{% for car in cars %}
+    <p><a href= "/samochod/{{car.id}}/"> {{car.model}}</a></p>
+    <p><a href="/samochod/{{car.id}}/"><img src = '/media/{{car.zdjecie}}'/></a></p>
+{% endfor %}
+</h3>
+</center>
+
+</body>
+</html>

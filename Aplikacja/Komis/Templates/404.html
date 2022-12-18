@@ -1,0 +1,16 @@
+{% extends 'menu.html' %}
+
+{% block css %}
+    {% load static %}
+    <script defer src="{% static 'js/theme.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}"  >
+{% endblock %}
+
+{% block title %}
+<title>Aut-Ko</title>
+{% endblock %}
+
+{% block title %}Strona nie istnieje!{% endblock %}
+{% block content %}
+Brak aut do wyświetlenia.
+{% endblock %}
