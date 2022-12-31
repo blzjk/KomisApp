@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.mail import send_mail, BadHeaderError
 from django.db.models import F
 from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect
@@ -12,13 +13,20 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import user_passes_test
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, HTML
-from django_social_share.templatetags.social_share import send_email
+
 
 from .filters import CarFilter
-from .form import MySignupForm, LoginForm, CarForm, ContactForm
-from .models import Samochod, Ocena, Marka, Zdjecie, Kolor, Kontakt
+from .form import MySignupForm, LoginForm, CarForm, ContactForm, RentCarForm
+from .models import Samochod, Marka, Zdjecie, Kolor, Kontakt
 from django.views.generic import View, TemplateView
 from django.http import JsonResponse
+
+
+data = {
+    'lang' : 'pl',
+    'charset' : 'utf-8',
+    'title' : 'komis.samochodowy.online.pl',
+}
 
 class MainView(TemplateView):
     template_name = 'index.html'
@@ -124,25 +132,17 @@ def car(request, id):
             end_date_rent = datetime.now()
         image_car = Zdjecie.objects.all()
         images = image_car.filter(samochod=car_user)
-        srednia = Ocena.objects.get(id=car_user)
         return render(request, 'car.html', {
             'car': car_user,
-            'rating': srednia,
             'image': images,
             'end_date_reservation': end_date_reservation,
             'end_date_rent' : end_date_rent,
-            'ratingRange': range(5)
         })
     except Samochod.DoesNotExist:
         return render(request, '404.html')
-    except Ocena.DoesNotExist:
-        newRating = Ocena(id=car_user, srednia=0, liczba=0)
-        newRating.save()
         return render(request, 'car.html', {
             'car': car_user,
-            'rating': newRating,
             'image': images,
-            'ratingRange': range(5)
         })
 
 
@@ -170,8 +170,10 @@ def search(request):
     carsVisible = Samochod.objects.all().filter(czyWidoczny=True)
     cars = carsVisible.filter(czyDoWynajecia=False)
     car_filter = CarFilter(request.GET, queryset=cars)
+    has_filter = any(field in request.GET for field in set(car_filter.get_fields()))
     context = {
-        'car_filter' : car_filter
+        'car_filter': car_filter,
+        'has_filter': has_filter
     }
     return render(request, "search.html", context)
 
@@ -191,9 +193,9 @@ def add_car(request):
         form = CarForm(request.POST, request.FILES)
         car = form.save(commit=False)
         car.autor = request.user
-        messages.success(request, 'Dodałeś.')
-
-        car.save()
+        if form.is_valid():
+            car.save()
+            return redirect('dodano_auto')
     form = CarForm()
     return render(
         request,
@@ -211,24 +213,46 @@ def make_of_car(request, id):
     return render(request, 'make_of_car.html', dane)
 
 
+
 def contact_view(request):
-    form = ContactForm()
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            uzytkownik = form.cleaned_data['uzytkownik']
-            auto = form.cleaned_data['auto']
-            wiadomosc = form.cleaned_data['wiadomosc']
-            Kontakt.uzytkownik = request.user
-            form.save()
-            send_email('temat maila', 'wiadomosc od uzytkownika', 'adres@adres.pl')
-            return redirect('index')
-
-        else:
-            print(form.errors) # This too.
-            print(form.non_field_errors()) # This too.
-
-    return render(request, "contact.html", {"form": form})
+            admin_address = "blazej.kozikowski@gmail.com"
+            responder_address = "komis.samochodowy.online@gmail.com"
+            client_address = request.user.email
+            auto = Samochod.objects.get(pk=request.POST['auto'])
+            message_for_admin = """
+                    Tutuł wiadomości: %s
+                    Adres użytkownika: %s
+                    Auto: %s %s
+                    Kolor: %s
+                    Nr rejestracyjny: %s
+                    VIN: %s
+                    Treść zapytania:
+                        %s
+            """ % (request.POST['subject'], client_address, auto.marka, auto, auto.kolor, auto.numer_rejestracyjny, auto.numer_seryjny, request.POST['wiadomosc'])
+            message_for_client = """
+                    Dzień dobry,
+                    dziękuję za wysłanie zapytania dotyczącego auta: %s %s, kolor - %s. 
+                    Postaram się odpowiedzieć w jak najkrótszym czasie. 
+                    
+                    Pozdrawiam,
+                    Administrator Komisu Samochodowego "Aut-Ko"
+                    ----
+                    Wiadomość generowana automatycznie. Proszę nie odpowiadać na tego emaila.
+            """ % (auto.marka, auto, auto.kolor)
+            try:
+                send_mail(auto, message_for_admin, responder_address, [admin_address])
+                send_mail(auto, message_for_client, responder_address, [client_address])
+            except BadHeaderError:
+                print('Wykryto niepoprawny nagłówek')
+            data['form'] = form
+            data['info'] = 'dziękuję za wysłanie wiadomości'
+            messages.success(request, 'Wiadomość została wysłana.')
+    else:
+        data['form'] = ContactForm()
+    return render(request, "contact.html", data)
 
 
 @login_required
@@ -240,3 +264,57 @@ def carsForRent(request):
         'cars': cars,
         'image': image,
     })
+
+
+@csrf_exempt
+def reservation(request, id):
+  if request.method == 'POST':
+    samochod = Samochod.objects.get(pk=id)
+    samochod.rezerwacja = True
+    samochod.data_rezerwacji = datetime.now()
+    samochod.ilosc_dni_rezerwacji = 7
+    samochod.save()
+    return HttpResponse('Samochód został zarezerwowany')
+  else:
+    return HttpResponse('Nieprawidłowe żądanie')
+
+
+@csrf_exempt
+def cancel_reservation(request, id):
+  if request.method == 'POST':
+      samochod = Samochod.objects.get(pk=id)
+      samochod.rezerwacja = False
+      samochod.save()
+      return HttpResponse('Samochód został zarezerwowany')
+  else:
+      return HttpResponse('Nieprawidłowe żądanie')
+
+
+
+@csrf_exempt
+def rent_a_car(request, id):
+  if request.method == 'POST':
+      form = RentCarForm(request.POST)
+      samochod = Samochod.objects.get(pk=id)
+      # samochod.ilosc_dni_rezerwacji = liczbaDni
+      samochod.czyWynajety = True
+      samochod.data_wynajecia = datetime.now()
+      samochod.save()
+      return HttpResponse('Samochód został zarezerwowany')
+  else:
+      return HttpResponse('Nieprawidłowe żądanie')
+
+
+@csrf_exempt
+def end_rent_a_car(request, id):
+  if request.method == 'POST':
+      samochod = Samochod.objects.get(pk=id)
+      samochod.czyWynajety = False
+      samochod.save()
+      return HttpResponse('Koniec rezerwacji')
+  else:
+      return HttpResponse('Nieprawidłowe żądanie')
+
+
+def car_added(request):
+    return render(request, 'car_added.html')

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <h1> Auto dodane do serwisu </h1>
+    {% include "multipla.html" %}
+    <div class="col-lg-3 form-label-group mx-auto">
+        <p class = "mt-5"> ... czeka na akceptację administratora.</p>
+    </div>
+    <div class="container-fluid px-lg-5 mt-5 ">
+    <div class="row">
+        {% for car in cars %}
+          {% include "car_gallery.html" %}
+        {% endfor %}
+    </div>
+</div>
+</div>
+{% endblock %}

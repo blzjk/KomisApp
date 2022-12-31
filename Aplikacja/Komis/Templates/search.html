@@ -16,7 +16,7 @@
     <div class = "col-sm-3 p-5">
 
 
-        <form method="get">
+        <form method="get" action="{% url 'szukaj' %}">
             {% for field in car_filter.form %}
 
       {% if field.name == 'model' %}
@@ -27,12 +27,11 @@
           {{ field|add_class:""|as_crispy_field }}
       {% endif %}
     {% endfor %}
-
-            <button class="btn btn-lg btn-danger mt-3 px-5 py-1" type="submit">Szukaj</button>
+       <button class="btn btn-danger btn-sm mt-3 px-5 py-1" type="submit">Szukaj</button>
         </form>
-
-
-
+        {% if has_filter %}
+            <a href = "{% url 'szukaj' %}"><button class="btn btn-warning btn-sm mt-3 px-4 py-1 "> Wyczyść filtry </button></a>
+        {% endif %}
     </div>
     <div class = "col-sm-9">
         <div class="album py-1 bg-light mt-5">

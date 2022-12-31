@@ -1,4 +1,5 @@
 {% load humanize %}
+	<script src="https://kit.fontawesome.com/603d8912ae.js" crossorigin="anonymous"></script>
 
 <!-- Gallery item -->
       <div class="col-xl-3 col-lg-4 col-md-6 mb-4 mt-5">
@@ -9,11 +10,29 @@
           <div class="p-4">
             <h5> <a href="/samochod/{{car.id}}/" class="text-dark">{{car.marka}} {{car.model}} </a></h5>
               <p>{{car.paliwo}} {{car.silnik}} {{car.kod_silnika|default_if_none:" "|upper}} / {{car.get_year}}r.</p>
-              <p class="red">{{ car.cena|intcomma }} zł</p>
-            <div class=" d-flex align-items-center justify-content-center rounded-pill bg-light px-1 py-1 mt-1">
-              <p class="small mb-0"><i class="fa fa-picture-o mr-2"></i><span class="font-weight-bold">{{ car.opis|truncatewords:6 }}</span></p>
-            </div>
+              {% if car.czyDoWynajecia == True %}
+                    {% if car.czyWynajety == True %}
+                        <tr>
+                            <div class=" d-flex align-items-center justify-content-center rounded-pill bg-light px-1 py-1 mt-1">
+                            <p class="small mb-0 red"><i class="fa-sharp fa-solid fa-circle-xmark fa-lg"></i><span class="font-weight-bold"> Aktualnie wynajęty.</span></p>
+                            </div>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <div class=" d-flex align-items-center justify-content-center rounded-pill bg-light px-1 py-1 mt-1">
+                            <p class="small mb-0"><i class="fa fa-light fa-hand-holding-dollar fa-lg"></i><span class="font-weight-bold"> {{ car.kosztWynajmuZaDzien|intcomma }} zł za dzień</span></p>
+                            </div>
+                        </tr>
+                    {% endif %}
+
+                {% else %}
+                    <p class="red">{{ car.cena|intcomma }} zł</p>
+                        <div class=" d-flex align-items-center justify-content-center rounded-pill bg-light px-1 py-1 mt-1">
+                        <p class="small mb-0"><i class="fa fa-light fa-pen fa-lg"></i><span class="font-weight-bold"> {{ car.opis|truncatewords:6 }}</span></p>
+                        </div>
+                {% endif %}
           </div>
         </div>
       </div>
+
       <!-- End -->

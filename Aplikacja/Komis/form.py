@@ -5,7 +5,6 @@ from django.forms import ModelForm
 
 from .models import Samochod, Kontakt
 
-
 class MySignupForm(UserCreationForm):
     # dodajemy do formularza pole e-mail
     email = forms.EmailField(required=True)
@@ -30,24 +29,28 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Hasło"}))
 
 
-class CarForm(forms.ModelForm):
-    class Meta:
-        model = Samochod
-        fields = ['marka', 'model', 'opis']
 
-
-class RatingForm(forms.Form):
-    rate = forms.IntegerField()
-    recipeId = forms.IntegerField()
+class DateInput(forms.DateInput):
+    input_type = 'date'
 
 class CarForm(forms.ModelForm):
     class Meta:
         model = Samochod
         fields = ['marka', 'model', 'silnik', 'opony', 'skrzynia_biegow',
                   'moc', 'data_produkcji', 'kolor', 'opis', 'cena']
+        widgets = {
+            'data_produkcji': DateInput(),
+        }
 
 
 class ContactForm(ModelForm):
+    temat = forms.CharField(max_length=70)
     class Meta:
         model = Kontakt
         fields = ('auto', 'wiadomosc')
+
+
+class RentCarForm(forms.Form):
+    liczbaDni = forms.ChoiceField()
+
+

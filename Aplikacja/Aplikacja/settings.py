@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 from django.urls import reverse_lazy
 
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -63,6 +64,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_filters',
     'widget_tweaks',
+    'star_ratings',
+
 ]
 def FILTERS_VERBOSE_LOOKUPS():
     from django_filters.conf import DEFAULTS
@@ -153,6 +156,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
 
 
 # Internationalization

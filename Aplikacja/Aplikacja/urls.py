@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from Komis.views import register, user_login, user_logout, index, index2, car, make_of_car, add_car, search, panel, cars, contact_view, carsForRent, CarJsonListView
+from Komis.views import register, user_login, user_logout, index, index2, car, make_of_car, add_car, search, panel, cars, contact_view, carsForRent, CarJsonListView, reservation, cancel_reservation, rent_a_car, end_rent_a_car, car_added
 
 
 urlpatterns = [
@@ -37,6 +37,11 @@ urlpatterns = [
     path('dodaj_samochod', add_car, name='samochod'),
     path('szukaj/', search, name='szukaj'),
     path('panel/', panel, name='panel'),
+    path('dodano_auto/', car_added, name='dodano_auto'),
+    path('rezerwacja/<id>', reservation, name='rezerwacja'),
+    path('koniec_rezerwacji/<id>', cancel_reservation, name='odwolaj_rezerwacje'),
+    path('wynajem/<id>', rent_a_car, name='wynajem'),
+    path('koniec_wynajmu/<id>', end_rent_a_car, name ='koniec_wynajmu'),
     path('haslo/', auth_views.PasswordChangeView.as_view(template_name='password_change_form.html'), name='haslo'),
     path('zmiana-hasla/', auth_views.PasswordChangeDoneView.as_view(template_name='password_change_done.html'),
          name='password_change_done'),
@@ -49,6 +54,7 @@ urlpatterns = [
          name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'),
          name='password_reset_complete'),
-    path('accounts/', include('allauth.urls'))
+    path('accounts/', include('allauth.urls')),
+    path('ratings/', include('star_ratings.urls', namespace='ratings')),
 
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

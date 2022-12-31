@@ -1,14 +1,10 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Ocena, Kolor, Marka, Zdjecie, Samochod
+from .models import Kolor, Marka, Zdjecie, Samochod
 
-
-class RatingInLine(admin.StackedInline):
-    model = Ocena
 
 @admin.register(Samochod)
 class SamochodAdmin(admin.ModelAdmin):
-    inlines = [RatingInLine, ]
     list_display = ['marka', 'model', 'data_produkcji', 'kolor', 'czyWidoczny']
     list_filter = ['czyWidoczny', 'marka', 'rezerwacja', 'paliwo', 'rodzaj']
 

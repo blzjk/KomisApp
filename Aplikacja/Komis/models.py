@@ -70,6 +70,7 @@ LICZBADRZWI = (
 )
 
 
+
 class Samochod(models.Model):
 
     def __str__(self):
@@ -96,21 +97,22 @@ class Samochod(models.Model):
     kolor = models.ForeignKey(Kolor, on_delete=models.CASCADE)
     liczba_drzwi = models.CharField(max_length=3, choices=LICZBADRZWI, default=5)
     cena = models.DecimalField(max_digits=20, decimal_places=2)
-    data_produkcji = models.DateField(max_length=10)
+    data_produkcji = models.DateField(max_length=100)
     rodzaj = models.CharField(choices=RODZAJ, max_length=50, default='osobowy')
     opis = models.CharField(null=True, max_length=255)
     paliwo = models.CharField(max_length=50, choices=PALIWO, default='benzyna')
     naped = models.CharField(choices=NAPED, null=True, max_length=255, default='przód')
     rezerwacja = models.BooleanField(default=False)
-    data_rezerwacji = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    data_rezerwacji = models.DateTimeField(blank=True, null=True)
     ilosc_dni_rezerwacji = models.PositiveSmallIntegerField(default=7, blank=True, null=True)
     autor = models.ForeignKey(User, default=User, on_delete=models.CASCADE, null=True)
     data_dodania = models.DateTimeField(default=now, blank=True, editable=False)
     czyDoWynajecia = models.BooleanField(default=False)
     czyWynajety = models.BooleanField(default=False)
-    data_wynajecia = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    okresWynajecia = models.IntegerField(null=True, blank=True)
-    kosztWynajmuZaGodzine = models.DecimalField(max_digits=20, decimal_places=2, null=True)
+    data_wynajecia = models.DateTimeField(blank=True, null=True)
+    okresWynajecia = models.IntegerField(null=True, blank=True, default=0)
+    data_konca_wynajecia = models.DateTimeField(blank=True, null=True)
+    kosztWynajmuZaDzien = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True, default=0)
     czyWidoczny = models.BooleanField(default=False)
 
     class Meta:
@@ -140,16 +142,6 @@ class Kontakt(models.Model):
         return self.email
 
 
-class Ocena(models.Model):
-    id = models.OneToOneField(Samochod, on_delete=models.CASCADE, primary_key=True)
-    liczba = models.PositiveIntegerField(default=0)
-    srednia = models.FloatField(default=0)
 
-    def CalculateNewAverage(self, mark):
-        if 0 <= mark <= 5:
-            sum = self.liczba * self.srednia
-            sum = sum + mark
-            self.liczba += 1
-            self.srednia = sum / self.liczba
 
 

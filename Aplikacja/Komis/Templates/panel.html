@@ -3,11 +3,7 @@
 {% load static %}
 
 {% block css %}
-	<script src="{% static 'js/base.js'%}"></script>
-	<script src="{% static 'js/base2.js'%}"></script>
-	<script src="{% static 'js/base3.js'%}"></script>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
 {% endblock %}
 
 
@@ -35,6 +31,17 @@
             <h5> <a href="/samochod/{{car.id}}/" class="text-dark">{{car.marka}} {{car.model}} - {{car.get_year}} r.</a></h5>
               <p>{{car.paliwo}} {{car.silnik}} {{car.kod_silnika|default_if_none:" "|upper}}</p>
               <div class="input-group mb-3">
+                  {% if car.czyDoWynajecia == True %}
+                    {% if car.czyWynajety == True %}
+                    <div class="col">
+                      <button type="button" class="btnHide btn btn-danger mt-1 col" >Zakończ wynajem</button>
+                    </div>
+                    {% else %}
+                    <div class="col">
+                      <button type="button" class="btnHide btn btn-success mt-1 col" >Wynajmij</button>
+                    </div>
+                    {% endif %}
+                  {% else %}
                   <div class="input-group-prepend">
                       <span class="input-group-text">Cena</span>
                   </div>
@@ -42,6 +49,7 @@
                   <div class="input-group-append">
                       <span class="input-group-text">zł</span>
                   </div>
+                  {% endif %}
               </div>
 
               <div class="input-group">
@@ -51,15 +59,20 @@
                   <textarea class="form-control">{{car.opis}}</textarea>
               </div>
               {% if car.czyWidoczny == True %}
-                 <button type="button" class="btnVisible btn btn-success mt-1" >Widoczny</button>
+                 <button type="button" class="btnVisible btn btn-success mt-1" id="visible" >Widoczny</button>
               {% else  %}
-                <button type="button" class="btnHide btn btn-danger mt-1" >Niewidoczny</button>
+                <button type="button" class="btnHide btn btn-danger mt-1" id="unvisible">Niewidoczny</button>
               {% endif %}
-              {% if car.rezerwacja == True and car.ilosc_dni_rezerwacji > 0 %}
-            <button type="button" class="btnBook btn btn-danger mt-1" >Rezerwacja</button>
-              {% else  %}
-            <button type="button" class="btnNotBook btn btn-secondary mt-1" >Rezerwacja</button>
-               {% endif %}
+              {% if car.czyDoWynajecia == False %}
+                  {% if car.rezerwacja == True and car.ilosc_dni_rezerwacji > 0 %}
+                    <button type="button" class="btnBook btn btn-danger mt-1" >Rezerwacja</button>
+                  {% else  %}
+                    <button type="button" class="btnNotBook btn btn-secondary mt-1" >Rezerwacja</button>
+                  {% endif %}
+              {% endif %}
+              <a class="btn btn-danger" href="path/to/settings" aria-label="Delete">
+                  <i class="fa fa-trash-o" aria-hidden="true"></i>
+                </a>
             <button type="button" class="btnDelete btn btn-secondary mt-1" >Usuń</button>
             <button type="button" class="btnSave btn btn-secondary mt-1" >Zapisz</button>
           </div>
@@ -79,5 +92,39 @@
     <script src="{% static 'js/panel.js'%}"></script>
 {% endblock %}
 
-
-
+{% block script %}
+<script>
+  function updateModel() {
+  var button = document.getElementById('visible');
+  var xhr = new XMLHttpRequest();
+  if (button.innerHTML == 'Widoczny') {
+    xhr.open('POST', '/update_model/');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        button.innerHTML = 'Niewidoczny';
+        alert('Samochód niewidoczny w serwisie.');
+      }
+      else {
+        alert('Wystąpił błąd podczas ukrywania samochodu');
+      }
+    };
+    xhr.send();
+  }
+  else {
+    xhr.open('POST', '/cancel_reservation/');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        button.innerHTML = 'Zarezerwuj';
+        alert('Samochód widoczny w serwisie');
+      }
+      else {
+        alert('Wystąpił błąd podczas włączania widoczności samochodu');
+      }
+    };
+    xhr.send();
+  }
+}
+</script>
+{% endblock %}

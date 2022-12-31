@@ -13,8 +13,9 @@
 
     <div class="content container">
        <div class="section wf-section">
-    <div class="h3"> Zostałeś pomyślnie wylogowany. <br>‍<br>‍<br>
-        <p>Możesz <a href="{% url 'logowanie' %}">zalogować się ponownie</a> lub przejść na <a href="/"> stronę główną</a> </p>
+               {% include "multipla.html" %}
+    <div class="h3 mt-5"> Zostałeś pomyślnie wylogowany. <br>‍<br>‍<br>
+        <p class="mt-5">Możesz <a href="{% url 'logowanie' %}">zalogować się ponownie</a> lub przejść na <a href="/"> stronę główną</a> </p>
     </div>
 </div>
     </div>

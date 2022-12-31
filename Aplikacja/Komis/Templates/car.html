@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
+{% load ratings %}
+{% load crispy_forms_tags %}
+{% load social_share %}
+
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/glightbox.css' %}">
     <link rel="stylesheet" href="{% static 'css/car.css' %}" >
+    <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
 {% endblock %}
 
 {% block title %}
@@ -11,16 +16,15 @@
 {% endblock %}
 
 {% block content %}
-
   <div class="row">
       <div class="col-sm">
-          <div class="p-2">
+          <tr class="p-2">
             <table class="table table-sm">
                 <thead>
                 {% if car.czyDoWynajecia == True %}
                     {% if car.czyWynajety == True %}
-                        <tr>
-                            <th scope="col" class="text-start"><h5>Aktualnie wynajęty. Ponownie dostępny za:</h5></th>
+                        <tr >
+                            <th id = "carRent" scope="col" class="text-start"><h5>Aktualnie wynajęty. Ponownie dostępny za:</h5></th>
                             <th class="align-middle"><h4><p id="counterRent"/></h4></th>
                         </tr>
                     {% endif %}
@@ -30,22 +34,23 @@
                         </tr>
                         <tr>
                             <th scope="col" class="text-start"><h5>Wynajem: </h5></th>
-                            <th class="align-middle">{{ car.kosztWynajmuZaGodzine|intcomma }} zł za godzinę</th>
+                            <th class="align-middle">{{ car.kosztWynajmuZaDzien|intcomma }} zł za dzień</th>
                         </tr>
                 {% endif %}
 
 
                 {% if car.rezerwacja == True and car.ilosc_dni_rezerwacji > 0 %}
-                    <tr>
+                    <tr id = "carSale">
                         <th><h1 id="counter_text_head" class="text-danger text-start align-middle">Zarezerwowany</h1></th>
                         <th><p id="counter_text">Koniec rezerwacji za:</p>
                             <p id="counter"/>
                         </th>
                     </tr>
                 {% endif %}
+
                     <tr>
                         <th scope="col" class="text-start"><h5>Auto</h5></th>
-                        <th class="align-middle"><h4>{{car.marka}} {{car.model}} - {{car.typ}}</h4></th>
+                        <th class="align-middle" ><h4>{{car.marka}} {{car.model}} - {{car.typ}}</h4></th>
                     </tr>
                     <tr>
                         <th scope="col" class="text-start"><h5>Rok produkcji: </h5></th>
@@ -68,12 +73,30 @@
                         <th scope="col" class="text-start"><h5>Opis: </h5></th>
                         <th class="align-middle">{{car.opis}}</th>
                     </tr>
+                    <tr>
+                        <th scope="col" class="text-start"><h5>Udostępnij to auto: </h5></th>
+                        <th>
+                            <div class="row">
+                              <div class="col-3">
+                                  {% post_to_facebook  object_or_url '<i class="fab fa-facebook fa-2x"></i>' %}
+                              </div>
+                              <div class="col-3">
+                                  {% post_to_twitter "Dobre, używane auto: {{object.title}}. Sprawdź to!" object_or_url '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>' %}
+                              </div>
+                              <div class="col-3">
+                                  {% send_email object.title "Fajny samochód do kupienia: {{object.title}}. Sprawdź to!" object_or_url '<i class="fa-solid fa-envelope fa-2x"></i>' %}
+                              </div>
+                                <div class="col-3">
+                                  {% post_to_whatsapp object_or_url '<i class="fa-brands fa-whatsapp fa-2x"></i>' %}
+                              </div>
+                            </div>
+                        </th>
+                    </tr>
                 {% endif %}
 
                 </thead>
             </table>
           </div>
-      </div>
 
       <div class="col-sm mt-1">
         <div class ="row">
@@ -81,18 +104,35 @@
                 <img src ='../../media/{{car.foto}}' class="rounded mx-auto d-block " height="200" >
             </div>
         </div>
+          <div class = "row text-center mt-3">
+            {% ratings car %}
+          </div>
+
         {% if car.czyDoWynajecia == True%}
         <div class ="row">
-            <div class="d-grid gap-3 col-6 mx-auto">
+            <div class="d-grid gap-3 col-3 mx-auto">
             {% if car.czyWynajety == False %}
-                <button class = "btn btn-primary mt-5">Wynajmij</button>
+                {{ form | crispy}}
+                <button id="rentCar_button" class = "btn btn-primary mt-5 mx-auto" onclick="rent_a_car()">Wynajmij</button>
             {% endif %}
             </div>
+<!--            <div>-->
+<!--                <select name="count" class="form-control">-->
+
+<!--                </select>-->
+<!--            </div>-->
         </div>
         {% endif %}
+    {% if user.is_authenticated %}
+        {% if car.rezerwacja == False and car.czyDoWynajecia == False%}
+            <div class="d-grid gap-3 col-3 mx-auto">
+                <button id="reservation_button" class = "btn btn-primary mt-5" onclick="updateModel()">Zarezerwuj</button>
+            </div>
+        {% endif %}
+    {% endif %}
       </div>
-  </div>
 
+  </div>
 
 
 <div class="container mt-0">
@@ -107,6 +147,10 @@
   </div>
 </div>
 
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+
 <script src="{% static 'js/glightbox.js'%}"></script>
 <script>
    const lightbox = GLightbox({
@@ -115,72 +159,156 @@
    autoplayVideos: true
 });
 </script>
+
 <script>
-// Set the date we're counting down to
-var countDownDate = new Date("{{ end_date_reservation.isoformat }}");
-<!--var countDownDate = new Date("Jan 5, 2022 15:37:25").getTime();-->
+var carSale = document.getElementById("carSale")
+if(carSale){
+    // Set the date we're counting down to
+    var countDownDate = new Date("{{ end_date_reservation.isoformat }}");
+    <!--var countDownDate = new Date("Jan 5, 2022 15:37:25").getTime();-->
 
 
-// Update the count down every 1 second
-var x = setInterval(function() {
+    // Update the count down every 1 second
+    var x = setInterval(function() {
 
-  // Get today's date and time
-  var now = new Date().getTime();
+      // Get today's date and time
+      var now = new Date().getTime();
 
-  // Find the distance between now and the count down date
-  var distance = countDownDate - now;
+      // Find the distance between now and the count down date
+      var distance = countDownDate - now;
 
-  // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      // Time calculations for days, hours, minutes and seconds
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-  // Output the result in an element with id="counter"
-  document.getElementById("counter").innerHTML = days + "d " + hours + "h "
-  + minutes + "m " + seconds + "s ";
+      // Output the result in an element with id="counter"
+      document.getElementById("counter").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
 
-  // If the count down is over, write some text
-  if (distance < 0) {
-    clearInterval(x);
-    document.getElementById("counter").innerHTML = "Rezerwacja zakończona";
-    document.getElementById("counter_text").innerHTML = "";
-    document.getElementById("counter_text_head").innerHTML = "";
-  }
-}, 1000);
+      // If the count down is over, write some text
+      if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("counter").innerHTML = "Rezerwacja zakończona";
+        document.getElementById("counter_text").innerHTML = "";
+        document.getElementById("counter_text_head").innerHTML = "";
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/koniec_rezerwacji/{{car.id}}');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send();
+      }
+    }, 1000);
+}
+</script>
+
+<script>
+var carRent = document.getElementById("carRent")
+if(carRent){
+    // Set the date we're counting down to
+    var countDownDate = new Date("{{ end_date_rent.isoformat }}");
+    <!--var countDownDate = new Date("Jan 5, 2022 15:37:25").getTime();-->
+
+
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+
+      // Get today's date and time
+      var now = new Date().getTime();
+
+      // Find the distance between now and the count down date
+      var distance = countDownDate - now;
+
+      // Time calculations for days, hours, minutes and seconds
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("counterRent").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+      // If the count down is over, write some text
+      if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("counterRent").innerHTML = "Dostępny";
+
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/koniec_wynajmu/{{car.id}}');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send();
+      }
+    }, 1000);
+}
 </script>
 <script>
-// Set the date we're counting down to
-var countDownDate = new Date("{{ end_date_rent.isoformat }}");
-<!--var countDownDate = new Date("Jan 5, 2022 15:37:25").getTime();-->
-
-
-// Update the count down every 1 second
-var x = setInterval(function() {
-
-  // Get today's date and time
-  var now = new Date().getTime();
-
-  // Find the distance between now and the count down date
-  var distance = countDownDate - now;
-
-  // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-  document.getElementById("counterRent").innerHTML = days + "d " + hours + "h "
-  + minutes + "m " + seconds + "s ";
-
-  // If the count down is over, write some text
-  if (distance < 0) {
-    clearInterval(x);
-    document.getElementById("counterRent").innerHTML = "Dostępny";
-    document.getElementById("counterRent_text").innerHTML = "";
-    document.getElementById("counterRent_text_head").innerHTML = "";
+  function updateModel() {
+  var button = document.getElementById('reservation_button');
+  var xhr = new XMLHttpRequest();
+  if (button.innerHTML == 'Zarezerwuj') {
+    xhr.open('POST', '/rezerwacja/{{car.id}}');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        button.innerHTML = 'Odwołaj rezerwację';
+        alert('Samochód został zarezerwowany na 7 dni.');
+      }
+      else {
+        alert('Wystąpił błąd podczas rezerwacji samochodu');
+      }
+    };
+    xhr.send();
   }
-}, 1000);
+  else {
+    xhr.open('POST', '/koniec_rezerwacji/{{car.id}}');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        button.innerHTML = 'Zarezerwuj';
+        alert('Rezerwacja samochodu została odwołana');
+      }
+      else {
+        alert('Wystąpił błąd podczas odwoływania rezerwacji samochodu');
+      }
+    };
+    xhr.send();
+  }
+}
+</script>
+
+<script>
+     function rent_a_car() {
+      var button = document.getElementById('rentCar_button');
+      var xhr = new XMLHttpRequest();
+      if (button.innerHTML == 'Wynajmij') {
+        xhr.open('POST', '/wynajem/{{car.id}}');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            button.innerHTML = 'Anuluj';
+            alert('Samochód został wynajęty  na {{car.okresWynajecia}} dni');
+          }
+          else {
+            alert('Wystąpił błąd podczas procesu wynajęcia samochodu');
+          }
+        };
+        xhr.send();
+      }
+      else {
+        xhr.open('POST', '/koniec_wynajmu/{{car.id}}');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            button.innerHTML = 'Wynajmij';
+            alert('Anulowano wynajem');
+          }
+          else {
+            alert('Wystąpił błąd podczas odwoływania wynajmu samochodu');
+          }
+        };
+        xhr.send();
+     }
+}
 </script>
 {% endblock %}
 
