@@ -1,9 +1,14 @@
 {% extends "panel.html" %}
-{% block title %}Witaj{% endblock %}
 
 
 {% block content %}
- <h1>Witaj, {{ user }}!</h1>
- <p>Twoje konto zostało utworzone. Możesz się już <a
-href="{% url 'logowanie' %}">zalogować</a>.</p>
+<div class="content container">
+       <div class="section wf-section">
+               {% include "multipla.html" %}
+        <div class="h3 mt-5"> Witaj, {{ user }}! <br>‍<br>‍<br>
+
+ <p>Twoje konto zostało utworzone. Możesz się już <a href="{% url 'logowanie' %}">zalogować</a>.</p>
+        </div>
+    </div>
+</div>
 {% endblock %}

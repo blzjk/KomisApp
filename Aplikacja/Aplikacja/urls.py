@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from Komis.views import register, user_login, user_logout, index, index2, car, make_of_car, add_car, search, panel, cars, contact_view, carsForRent, CarJsonListView, reservation, cancel_reservation, rent_a_car, end_rent_a_car, car_added
+from Komis.views import register, user_login, user_logout, index, index2, car, make_of_car, add_car, search, panel, cars, contact_view, carsForRent, CarJsonListView, reservation, cancel_reservation, rent_a_car, end_rent_a_car, car_added, car_visible, car_unvisible
 
 
 urlpatterns = [
@@ -39,9 +39,11 @@ urlpatterns = [
     path('panel/', panel, name='panel'),
     path('dodano_auto/', car_added, name='dodano_auto'),
     path('rezerwacja/<id>', reservation, name='rezerwacja'),
-    path('koniec_rezerwacji/<id>', cancel_reservation, name='odwolaj_rezerwacje'),
+    path('koniec_rezerwacji/<id>', cancel_reservation, name='koniec_rezerwacji'),
     path('wynajem/<id>', rent_a_car, name='wynajem'),
     path('koniec_wynajmu/<id>', end_rent_a_car, name ='koniec_wynajmu'),
+    path('samochod_widoczny/<id>', car_visible, name='samochod_widoczny'),
+    path('samochod_niewidoczny/<id>', car_unvisible, name='samochod_niewidoczny'),
     path('haslo/', auth_views.PasswordChangeView.as_view(template_name='password_change_form.html'), name='haslo'),
     path('zmiana-hasla/', auth_views.PasswordChangeDoneView.as_view(template_name='password_change_done.html'),
          name='password_change_done'),

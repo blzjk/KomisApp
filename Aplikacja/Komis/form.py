@@ -44,7 +44,7 @@ class CarForm(forms.ModelForm):
 
 
 class ContactForm(ModelForm):
-    temat = forms.CharField(max_length=70)
+    subject = forms.CharField(max_length=70)
     class Meta:
         model = Kontakt
         fields = ('auto', 'wiadomosc')

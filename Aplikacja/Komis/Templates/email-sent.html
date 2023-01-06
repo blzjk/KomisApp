@@ -1,0 +1,14 @@
+{% extends "panel.html" %}
+
+
+{% block content %}
+<div class="content container">
+       <div class="section wf-section">
+               {% include "multipla.html" %}
+        <div class="h3 mt-5"> Dziękuję, {{ user }}! <br>‍<br>‍<br>
+            <p>Twoja wiadomość została wysłana. </p>
+            <p class = "mt-5"><a href="{% url 'samochody' %}">Sprawdź nasze pozostałe auta. </a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

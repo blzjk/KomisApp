@@ -72,12 +72,10 @@ LICZBADRZWI = (
 
 
 class Samochod(models.Model):
-
-    def __str__(self):
-        return self.model
-
     def get_year(self):
         return self.data_produkcji.year
+
+
 
     def clean(self):
         if self.ilosc_dni_rezerwacji is None:
@@ -119,6 +117,8 @@ class Samochod(models.Model):
         verbose_name = "Auto"
         verbose_name_plural = "Auta"
 
+    def __str__(self):
+        return str(self.marka) + " " + self.model + " " + str(self.silnik) + str(self.kod_silnika) + " " + str(self.moc) + "KM" + " " + str(self.get_year()) + "r."
 
 class Zdjecie(models.Model):
 

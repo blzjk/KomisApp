@@ -15,30 +15,30 @@
 
 {% block content %}
 
-<div class="container">
+<div class="row">
     <div class="col-3 mx-auto">
-<div class="form-car">
-    {% for car in cars%}
-    {{ car.marka }}
-    {% endfor %}
-        <form method="post" action="" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% load crispy_forms_tags %}
-            {{ form | crispy}}
-
-            <input type="submit" value="Dodaj" class="btn">
-        </form>
+        <div class="form-car">
+            {% for car in cars%}
+            {{ car.marka }}
+            {% endfor %}
+                <form method="post" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% load crispy_forms_tags %}
+                    {{ form | crispy}}
+                    <button type="submit" class="btn btn-primary mt-4">Dodaj</button>
+                </form>
+        </div>
 </div>
-</div>
+    <div class = "col-3 mx-auto mt-5">
+        <input type="file" multiple>
+        <label>Title</label>
+        <input type="text" id="title" class="form-control">
+        <label>Description</label>
+        <textarea id="description" class="form-control"></textarea>
+        <button type="button" id="saveBtn" class="btn btn-primary mt-4">Zapisz</button>
     </div>
+</div>
 
-<div>
-<input type="file" multiple>
-<label>Title</label>
-<input type="text" id="title" class="form-control">
-<label>Description</label>
-<textarea id="description" class="form-control"></textarea>
-<button type="button" id="saveBtn" class="btn btn-primary mt-4">Save</button>
 
 
 <script>

@@ -34,21 +34,25 @@
                   {% if car.czyDoWynajecia == True %}
                     {% if car.czyWynajety == True %}
                     <div class="col">
-                      <button type="button" class="btnHide btn btn-danger mt-1 col" >Zakończ wynajem</button>
+                      <button type="button" class="btnHide btn btn-danger mt-1 col" id="rent_{{car.id}}">Zakończ wynajem</button>
                     </div>
                     {% else %}
-                    <div class="col">
-                      <button type="button" class="btnHide btn btn-success mt-1 col" >Wynajmij</button>
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Kosz wynajmu</span>
+                      </div>
+                      <input type="text" class="form-control text-center" value = {{ car.kosztWynajmuZaDzien|intcomma }}>
+                      <div class="input-group-append">
+                          <span class="input-group-text">zł / dzień</span>
                     </div>
                     {% endif %}
                   {% else %}
-                  <div class="input-group-prepend">
+                   <div class="input-group-prepend">
                       <span class="input-group-text">Cena</span>
-                  </div>
-                  <input type="text" class="form-control text-center" value = {{ car.cena|intcomma }}>
-                  <div class="input-group-append">
-                      <span class="input-group-text">zł</span>
-                  </div>
+                      </div>
+                      <input type="text" class="form-control text-center" id="value_{{car.id}}" value = {{ car.cena|intcomma }}>
+                      <div class="input-group-append">
+                          <span class="input-group-text">zł</span>
+                    </div>
                   {% endif %}
               </div>
 
@@ -58,23 +62,31 @@
                   </div>
                   <textarea class="form-control">{{car.opis}}</textarea>
               </div>
+
               {% if car.czyWidoczny == True %}
-                 <button type="button" class="btnVisible btn btn-success mt-1" id="visible" >Widoczny</button>
+                 <button type="button" class="btnVisible btn btn-success mt-1" id="visible_{{car.id}}" onclick="carVisible({{car.id}})" >Widoczny</button>
               {% else  %}
-                <button type="button" class="btnHide btn btn-danger mt-1" id="unvisible">Niewidoczny</button>
+                <button type="button" class="btnHide btn btn-danger mt-1" id="unvisible_{{car.id}}" onclick="carVisible({{car.id}})">Niewidoczny</button>
               {% endif %}
-              {% if car.czyDoWynajecia == False %}
+              {% if car.czyDoWynajecia == True %}
+                    {% if car.czyWynajety == True %}
+                    <div class="col">
+                      <button type="button" class="btnHide btn btn-danger mt-1 col" id="end_rent_{{car.id}}">Zakończ wynajem</button>
+                    </div>
+                    {% endif %}
+              {% else %}
                   {% if car.rezerwacja == True and car.ilosc_dni_rezerwacji > 0 %}
-                    <button type="button" class="btnBook btn btn-danger mt-1" >Rezerwacja</button>
+                    <button type="button" class="btnBook btn btn-danger mt-1" id="reservation_{{car.id}}" onclick="carReservation({{car.id}})">Rezerwacja</button>
                   {% else  %}
-                    <button type="button" class="btnNotBook btn btn-secondary mt-1" >Rezerwacja</button>
+                    <button type="button" class="btnNotBook btn btn-secondary mt-1" id="end_reservation_{{car.id}}" onclick="carReservation({{car.id}})">Rezerwacja</button>
                   {% endif %}
               {% endif %}
-              <a class="btn btn-danger" href="path/to/settings" aria-label="Delete">
+
+
+            <button type="button" class="btnSave btn btn-secondary mt-1" id="save_{{car.id}}">Zapisz</button>
+              <a class="btn btn-danger" id="delete_{{car.id}}" href="path/to/settings" aria-label="Delete">
                   <i class="fa fa-trash-o" aria-hidden="true"></i>
                 </a>
-            <button type="button" class="btnDelete btn btn-secondary mt-1" >Usuń</button>
-            <button type="button" class="btnSave btn btn-secondary mt-1" >Zapisz</button>
           </div>
         </div>
       </div>
@@ -83,48 +95,10 @@
 
     </div>
   </div>
-
-
-
-{% for page in pagecount %}
-        <span><a href="{% url 'strona' page|add:'1'%}">{{ page|add:'1' }}</a></span>
-    {% endfor %}
-    <script src="{% static 'js/panel.js'%}"></script>
+</div>
 {% endblock %}
 
 {% block script %}
-<script>
-  function updateModel() {
-  var button = document.getElementById('visible');
-  var xhr = new XMLHttpRequest();
-  if (button.innerHTML == 'Widoczny') {
-    xhr.open('POST', '/update_model/');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        button.innerHTML = 'Niewidoczny';
-        alert('Samochód niewidoczny w serwisie.');
-      }
-      else {
-        alert('Wystąpił błąd podczas ukrywania samochodu');
-      }
-    };
-    xhr.send();
-  }
-  else {
-    xhr.open('POST', '/cancel_reservation/');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        button.innerHTML = 'Zarezerwuj';
-        alert('Samochód widoczny w serwisie');
-      }
-      else {
-        alert('Wystąpił błąd podczas włączania widoczności samochodu');
-      }
-    };
-    xhr.send();
-  }
-}
-</script>
+
+<script src="{% static 'js/panel.js'%}"></script>
 {% endblock %}

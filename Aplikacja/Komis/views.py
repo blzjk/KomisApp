@@ -183,7 +183,9 @@ def search(request):
 @user_passes_test(lambda u: u.is_superuser)
 def panel(request):
     cars = Samochod.objects.all()
-    dane = {'cars': cars}
+    dane = {
+        'cars': cars,
+    }
     return render(request, 'panel.html', dane)
 
 
@@ -213,7 +215,7 @@ def make_of_car(request, id):
     return render(request, 'make_of_car.html', dane)
 
 
-
+@login_required
 def contact_view(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
@@ -247,9 +249,7 @@ def contact_view(request):
                 send_mail(auto, message_for_client, responder_address, [client_address])
             except BadHeaderError:
                 print('Wykryto niepoprawny nagłówek')
-            data['form'] = form
-            data['info'] = 'dziękuję za wysłanie wiadomości'
-            messages.success(request, 'Wiadomość została wysłana.')
+            return render(request, "email-sent.html", data)
     else:
         data['form'] = ContactForm()
     return render(request, "contact.html", data)
@@ -318,3 +318,24 @@ def end_rent_a_car(request, id):
 
 def car_added(request):
     return render(request, 'car_added.html')
+
+@csrf_exempt
+def car_visible(request, id):
+  if request.method == 'POST':
+      samochod = Samochod.objects.get(pk=id)
+      samochod.czyWidoczny = True
+      samochod.save()
+      return HttpResponse('Samochód widoczny')
+  else:
+      return HttpResponse('Nieprawidłowe żądanie')
+
+
+@csrf_exempt
+def car_unvisible(request, id):
+  if request.method == 'POST':
+      samochod = Samochod.objects.get(pk=id)
+      samochod.czyWidoczny = False
+      samochod.save()
+      return HttpResponse('Samochód niewidoczny')
+  else:
+      return HttpResponse('Nieprawidłowe żądanie')

@@ -31,9 +31,9 @@ class KolorAdmin(admin.ModelAdmin):
     list_filter = ['nazwa']
 
 
-# @admin.register(Zdjecie)
-# class Zdjecie(admin.ModelAdmin):
-#     list_display = ['obraz']
+@admin.register(Zdjecie)
+class Zdjecie(admin.ModelAdmin):
+    list_display = ['foto']
 
 
 class ImageInline(admin.TabularInline):
