@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from Komis.views import register, user_login, user_logout, index, index2, car, make_of_car, add_car, search, panel, cars, contact_view, carsForRent, CarJsonListView, reservation, cancel_reservation, rent_a_car, end_rent_a_car, car_added, car_visible, car_unvisible
+from Komis.views import register, user_login, user_logout, index, index2, car, make_of_car, add_car, search, panel, cars, contact_view, carsForRent, CarJsonListView, reservation, cancel_reservation, rent_a_car, end_rent_a_car, car_added, car_visible, car_unvisible, search_visible, search_unvisible, car_save
 
 
 urlpatterns = [
@@ -44,6 +44,9 @@ urlpatterns = [
     path('koniec_wynajmu/<id>', end_rent_a_car, name ='koniec_wynajmu'),
     path('samochod_widoczny/<id>', car_visible, name='samochod_widoczny'),
     path('samochod_niewidoczny/<id>', car_unvisible, name='samochod_niewidoczny'),
+    path('wyszukiwarka_panel_on/', search_visible, name='wyszukiwarka_panel_on'),
+    path('wyszukiwarka_panel_off/', search_unvisible, name='wyszukiwarka_panel_off'),
+    path('zapisz/<id>', car_save, name="zapisz"),
     path('haslo/', auth_views.PasswordChangeView.as_view(template_name='password_change_form.html'), name='haslo'),
     path('zmiana-hasla/', auth_views.PasswordChangeDoneView.as_view(template_name='password_change_done.html'),
          name='password_change_done'),

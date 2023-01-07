@@ -1,5 +1,7 @@
 import math
 from datetime import datetime, timedelta
+from decimal import Decimal
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -183,8 +185,12 @@ def search(request):
 @user_passes_test(lambda u: u.is_superuser)
 def panel(request):
     cars = Samochod.objects.all()
+    car_filter = CarFilter(request.GET, queryset=cars)
+    has_filter = any(field in request.GET for field in set(car_filter.get_fields()))
     dane = {
         'cars': cars,
+        'car_filter': car_filter,
+        'has_filter': has_filter
     }
     return render(request, 'panel.html', dane)
 
@@ -337,5 +343,28 @@ def car_unvisible(request, id):
       samochod.czyWidoczny = False
       samochod.save()
       return HttpResponse('Samochód niewidoczny')
+  else:
+      return HttpResponse('Nieprawidłowe żądanie')
+
+@csrf_exempt
+def search_visible(request):
+    return render (request, 'panel.html')
+
+@csrf_exempt
+def search_unvisible(request):
+    return render (request, 'panel.html')
+
+@csrf_exempt
+def car_save(request, id):
+  if request.method == 'POST':
+      samochod = Samochod.objects.get(pk=id)
+      price = request.POST.get('price')
+      price_rent = request.POST.get('price_rent')
+      description = request.POST.get('description')
+      samochod.cena = price
+      samochod.kosztWynajmuZaDzien = price_rent
+      samochod.opis = description
+      samochod.save()
+      return HttpResponse('Zmiany zapisane')
   else:
       return HttpResponse('Nieprawidłowe żądanie')

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
-{% load humanize %}
 {% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
 
 {% block css %}
 
@@ -15,90 +16,21 @@
 
 <div class="container-fluid mt-5">
 <div class="float-left mt-5 text-center"><a href="{% url 'samochod' %}"><button type="button" class="btn btn-primary"> Dodaj auto</button></a>
-<a href="{% url 'haslo' %}"><button type="button" class="btn btn-primary">Zmień hasło</button></a></div>
+<a href="{% url 'haslo' %}"><button type="button" class="btn btn-primary">Zmień hasło</button></a>
+<button id="search_button" type="button" class="btn btn-primary" onclick="searchVisible()">Ukryj wyszukiwarkę</button>
+</div>
 
 
-  <div class="px-lg-5 mt-5 ">
-    <div class="row">
-{% for car in cars %}
-      <!-- Gallery item -->
-      <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-        <div class="bg-white rounded shadow-sm text-center">
-            <a href="/samochod/{{car.id}}/">
-            <img src ='../media/{{car.foto}}' alt="" class="rounded mt-2" height="100px" max-width="100%" data-target="#image-gallery">
-            </a>
-          <div class="p-4">
-            <h5> <a href="/samochod/{{car.id}}/" class="text-dark">{{car.marka}} {{car.model}} - {{car.get_year}} r.</a></h5>
-              <p>{{car.paliwo}} {{car.silnik}} {{car.kod_silnika|default_if_none:" "|upper}}</p>
-              <div class="input-group mb-3">
-                  {% if car.czyDoWynajecia == True %}
-                    {% if car.czyWynajety == True %}
-                    <div class="col">
-                      <button type="button" class="btnHide btn btn-danger mt-1 col" id="rent_{{car.id}}">Zakończ wynajem</button>
-                    </div>
-                    {% else %}
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">Kosz wynajmu</span>
-                      </div>
-                      <input type="text" class="form-control text-center" value = {{ car.kosztWynajmuZaDzien|intcomma }}>
-                      <div class="input-group-append">
-                          <span class="input-group-text">zł / dzień</span>
-                    </div>
-                    {% endif %}
-                  {% else %}
-                   <div class="input-group-prepend">
-                      <span class="input-group-text">Cena</span>
-                      </div>
-                      <input type="text" class="form-control text-center" id="value_{{car.id}}" value = {{ car.cena|intcomma }}>
-                      <div class="input-group-append">
-                          <span class="input-group-text">zł</span>
-                    </div>
-                  {% endif %}
-              </div>
-
-              <div class="input-group">
-                  <div class="input-group-prepend ">
-                      <span class="input-group-text">Opis</span>
-                  </div>
-                  <textarea class="form-control">{{car.opis}}</textarea>
-              </div>
-
-              {% if car.czyWidoczny == True %}
-                 <button type="button" class="btnVisible btn btn-success mt-1" id="visible_{{car.id}}" onclick="carVisible({{car.id}})" >Widoczny</button>
-              {% else  %}
-                <button type="button" class="btnHide btn btn-danger mt-1" id="unvisible_{{car.id}}" onclick="carVisible({{car.id}})">Niewidoczny</button>
-              {% endif %}
-              {% if car.czyDoWynajecia == True %}
-                    {% if car.czyWynajety == True %}
-                    <div class="col">
-                      <button type="button" class="btnHide btn btn-danger mt-1 col" id="end_rent_{{car.id}}">Zakończ wynajem</button>
-                    </div>
-                    {% endif %}
-              {% else %}
-                  {% if car.rezerwacja == True and car.ilosc_dni_rezerwacji > 0 %}
-                    <button type="button" class="btnBook btn btn-danger mt-1" id="reservation_{{car.id}}" onclick="carReservation({{car.id}})">Rezerwacja</button>
-                  {% else  %}
-                    <button type="button" class="btnNotBook btn btn-secondary mt-1" id="end_reservation_{{car.id}}" onclick="carReservation({{car.id}})">Rezerwacja</button>
-                  {% endif %}
-              {% endif %}
-
-
-            <button type="button" class="btnSave btn btn-secondary mt-1" id="save_{{car.id}}">Zapisz</button>
-              <a class="btn btn-danger" id="delete_{{car.id}}" href="path/to/settings" aria-label="Delete">
-                  <i class="fa fa-trash-o" aria-hidden="true"></i>
-                </a>
-          </div>
+        <div id="div_search" class="">
+            {% include "panel_search.html" %}
         </div>
-      </div>
-      <!-- End -->
-{% endfor %}
+
+        <div id="div_panel" class="">
+        {% include "panel_car_gallery.html" %}
+        </div>
 
     </div>
-  </div>
 </div>
 {% endblock %}
 
-{% block script %}
 
-<script src="{% static 'js/panel.js'%}"></script>
-{% endblock %}

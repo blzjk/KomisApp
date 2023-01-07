@@ -94,7 +94,7 @@ class Samochod(models.Model):
     numer_seryjny = models.CharField(max_length=20)
     kolor = models.ForeignKey(Kolor, on_delete=models.CASCADE)
     liczba_drzwi = models.CharField(max_length=3, choices=LICZBADRZWI, default=5)
-    cena = models.DecimalField(max_digits=20, decimal_places=2)
+    cena = models.DecimalField(max_digits=20, decimal_places=2, null=True)
     data_produkcji = models.DateField(max_length=100)
     rodzaj = models.CharField(choices=RODZAJ, max_length=50, default='osobowy')
     opis = models.CharField(null=True, max_length=255)
