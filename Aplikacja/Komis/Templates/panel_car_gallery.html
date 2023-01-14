@@ -16,11 +16,7 @@
               <p>{{car.paliwo}} {{car.silnik}} {{car.kod_silnika|default_if_none:" "|upper}}</p>
               <div class="input-group mb-3">
                   {% if car.czyDoWynajecia == True %}
-                    {% if car.czyWynajety == True %}
-                    <div class="col">
-                      <button type="button" class="btnHide btn btn-danger mt-1 col" id="rent_{{car.id}}">Zakończ wynajem</button>
-                    </div>
-                    {% else %}
+                    {% if car.czyWynajety == False %}
                     <div class="input-group-prepend">
                       <span class="input-group-text">Kosz wynajmu</span>
                       </div>
@@ -54,9 +50,7 @@
               {% endif %}
               {% if car.czyDoWynajecia == True %}
                     {% if car.czyWynajety == True %}
-                    <div class="col">
                       <button type="button" class="btnHide btn btn-danger mt-1 col" id="end_rent_{{car.id}}">Zakończ wynajem</button>
-                    </div>
                     {% endif %}
               {% else %}
                   {% if car.rezerwacja == True and car.ilosc_dni_rezerwacji > 0 %}
@@ -68,9 +62,6 @@
 
 
             <button type="button" class="btnSave btn btn-secondary mt-1" id="save_{{car.id}}" onclick="saveChanges({{car.id}})">Zapisz</button>
-              <a class="btn btn-danger" id="delete_{{car.id}}" href="path/to/settings" aria-label="Delete">
-                  <i class="fa fa-trash-o" aria-hidden="true"></i>
-                </a>
           </div>
         </div>
       </div>
@@ -85,5 +76,4 @@
 {% block script %}
 <script src="{% static 'js/panel.js'%}"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="sweetalert2.all.min.js"></script>
 {% endblock %}

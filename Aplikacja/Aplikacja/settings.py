@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
+import django_heroku
+import dj_database_url
 from django.urls import reverse_lazy
 
 
@@ -41,7 +43,7 @@ SECRET_KEY = 'django-insecure-bgwrva_rq(!7cn1&w-9w0xgopdjbm=s(5!wb)cio^$s5mlmmqf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -65,6 +67,7 @@ INSTALLED_APPS = [
     'django_filters',
     'widget_tweaks',
     'star_ratings',
+    'captcha',
 
 ]
 def FILTERS_VERBOSE_LOOKUPS():
@@ -176,6 +179,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT =  os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
+django_heroku.settings(locals())
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -190,3 +196,6 @@ MEDIA_URL = '/media/'
 if DEBUG:
     import mimetypes
     mimetypes.add_type("application/javascript", ".js", True)
+
+RECAPTCHA_PUBLIC_KEY = '6LeDPt8jAAAAAFxDMMBRp_f6DR828uwkiWS7qhoJ'
+RECAPTCHA_PRIVATE_KEY = '6LeDPt8jAAAAAGTXkTUWWhsbvE3BXPPuGkuePK7u'

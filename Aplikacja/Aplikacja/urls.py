@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from Komis.views import register, user_login, user_logout, index, index2, car, make_of_car, add_car, search, panel, cars, contact_view, carsForRent, CarJsonListView, reservation, cancel_reservation, rent_a_car, end_rent_a_car, car_added, car_visible, car_unvisible, search_visible, search_unvisible, car_save
+from Komis.views import register, user_login, user_logout, index, index2, car, make_of_car, add_car, search, panel, cars, contact_view, contact_public_view ,carsForRent, CarJsonListView, reservation, cancel_reservation, rent_a_car, end_rent_a_car, car_added, car_visible, car_unvisible, search_visible, search_unvisible, car_save
 
 
 urlpatterns = [
@@ -26,10 +26,8 @@ urlpatterns = [
     path('', index, name='index'),
     path('cars-json/', CarJsonListView.as_view(), name='indexJson'),
     path('samochody', cars, name='samochody'),
-    path('rejestracja', register, name='rejestracja'),
     path('kontakt', contact_view, name='kontakt'),
-    path('logowanie', user_login, name='logowanie'),
-    path('wylogowanie', user_logout, name='wylogowanie'),
+    path('kontakt_publiczny/', contact_public_view, name='kontakt_publiczny'),
     path('strona/<int:page>', index2, name='strona'),
     path('samochod/<id>/', car, name='car'),
     path('wynajem', carsForRent, name='wynajem'),
@@ -47,6 +45,9 @@ urlpatterns = [
     path('wyszukiwarka_panel_on/', search_visible, name='wyszukiwarka_panel_on'),
     path('wyszukiwarka_panel_off/', search_unvisible, name='wyszukiwarka_panel_off'),
     path('zapisz/<id>', car_save, name="zapisz"),
+    path('rejestracja', register, name='rejestracja'),
+    path('logowanie', user_login, name='logowanie'),
+    path('wylogowanie', user_logout, name='wylogowanie'),
     path('haslo/', auth_views.PasswordChangeView.as_view(template_name='password_change_form.html'), name='haslo'),
     path('zmiana-hasla/', auth_views.PasswordChangeDoneView.as_view(template_name='password_change_done.html'),
          name='password_change_done'),

@@ -44,7 +44,11 @@
 					<img src="../../static/admin-icon.png" width="40" alt="" class="img-admin-icon" />
 					</a>
 				{% else %}
+					{% if user.is_authenticated %}
 					<a href="/kontakt" class="nav-link-5 w-nav-link" title="Skontaktuj się z nami">KONTAKT</a>
+					{% else %}
+					<a href="/kontakt_publiczny" class="nav-link-5 w-nav-link" title="Skontaktuj się z nami">KONTAKT</a>
+					{% endif %}
 				{% endif %}
 
 				{% if user.is_authenticated %}
@@ -61,8 +65,7 @@
 		<div class="w-nav-overlay" data-wf-ignore="" id="w-nav-overlay-0"></div>
 	</div>
 	<div class="div-block">
-		<img src="https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o.jpg" loading="lazy" srcset="https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-500.jpg 500w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-800.jpg 800w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-1080.jpg 1080w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-1600.jpg 1600w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-2000.jpg 2000w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-2600.jpg 2600w, https://uploads-ssl.webflow.com/636e125ea81428836f71ea92/637a0cb5cf7e1501edeeeba2_Niebo_t%C5%82o-p-3200.jpg 3200w" sizes="100vw" alt="" class="image-7">
-
+		<img src="../../static/haeven-background/Niebo_tło.jpg" loading="lazy" srcset="../../static/haeven-background/Niebo_tło-p-500.jpg 500w, ../../static/haeven-background/Niebo_tło-p-800.jpg 800w, ../../static/haeven-background/Niebo_tło-p-1080.jpg 1080w, ../../static/haeven-background/Niebo_tło-p-1600.jpg 1600w, ../../static/haeven-background/Niebo_tło-p-2000.jpg 2000w, ../../static/haeven-background/Niebo_tło-p-2600.jpg 2600w, ../../static/haeven-background/Niebo_tło-p-3200.jpg 3200w" sizes="100vw" alt="haeven" class="image-7">
 		<a href="/" class="text-decoration-none" title="Przejdź na stronę główną"><h1 class="heading-2">Auto Komis</h1></a>
 		<a href="/" class="text-decoration-none" title="Przejdź na stronę główną"><h1 class="base-heading baseheading2">AUT-KO</h1></a>
 

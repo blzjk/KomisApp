@@ -18,7 +18,7 @@ from crispy_forms.layout import Layout, Field, HTML
 
 
 from .filters import CarFilter
-from .form import MySignupForm, LoginForm, CarForm, ContactForm, RentCarForm
+from .form import MySignupForm, LoginForm, CarForm, ContactForm, RentCarForm, ContactFormPublic
 from .models import Samochod, Marka, Zdjecie, Kolor, Kontakt
 from django.views.generic import View, TemplateView
 from django.http import JsonResponse
@@ -43,7 +43,7 @@ def index(request):
     return index2(request, 1)
 
 
-# wyświetlanie 3 ostatnio dodanych pojazdów
+# wyświetlanie 6 ostatnio dodanych pojazdów
 def index2(request, page):
     listaWidocznychZatwierdzonychAut = Samochod.objects.all().filter(czyWidoczny=True)
     listaZatwierdzonychAut = listaWidocznychZatwierdzonychAut.filter(czyDoWynajecia=False)
@@ -195,23 +195,29 @@ def panel(request):
     return render(request, 'panel.html', dane)
 
 
+
 @login_required
 def add_car(request):
     if request.method == 'POST':
         form = CarForm(request.POST, request.FILES)
-        car = form.save(commit=False)
-        car.autor = request.user
+        fotos = request.FILES.getlist('foto')
         if form.is_valid():
+            car = form.save(commit=False)
+            car.uzytkownik = request.user
             car.save()
+            for f in fotos:
+                Zdjecie.objects.create(samochod=car, foto=f)
             return redirect('dodano_auto')
-    form = CarForm()
+    else:
+        form = CarForm()
     return render(
         request,
         'users/add_car.html',
         {
-            'form': form
+            'form': form,
         }
     )
+
 
 
 def make_of_car(request, id):
@@ -233,23 +239,23 @@ def contact_view(request):
             message_for_admin = """
                     Tutuł wiadomości: %s
                     Adres użytkownika: %s
-                    Auto: %s %s
+                    Auto: %s
                     Kolor: %s
                     Nr rejestracyjny: %s
                     VIN: %s
                     Treść zapytania:
                         %s
-            """ % (request.POST['subject'], client_address, auto.marka, auto, auto.kolor, auto.numer_rejestracyjny, auto.numer_seryjny, request.POST['wiadomosc'])
+            """ % (request.POST['subject'], client_address, auto, auto.kolor, auto.numer_rejestracyjny, auto.numer_seryjny, request.POST['wiadomosc'])
             message_for_client = """
                     Dzień dobry,
-                    dziękuję za wysłanie zapytania dotyczącego auta: %s %s, kolor - %s. 
+                    dziękuję za wysłanie zapytania dotyczącego auta: %s, kolor - %s. 
                     Postaram się odpowiedzieć w jak najkrótszym czasie. 
                     
                     Pozdrawiam,
                     Administrator Komisu Samochodowego "Aut-Ko"
                     ----
                     Wiadomość generowana automatycznie. Proszę nie odpowiadać na tego emaila.
-            """ % (auto.marka, auto, auto.kolor)
+            """ % (auto, auto.kolor)
             try:
                 send_mail(auto, message_for_admin, responder_address, [admin_address])
                 send_mail(auto, message_for_client, responder_address, [client_address])
@@ -259,6 +265,31 @@ def contact_view(request):
     else:
         data['form'] = ContactForm()
     return render(request, "contact.html", data)
+
+
+def contact_public_view(request):
+    if request.method == "POST":
+        form = ContactFormPublic(request.POST)
+        if form.is_valid():
+            subject = "Formularz kontaktowy"
+            body = {
+                'imie': form.cleaned_data['imie'],
+                'nazwisko': form.cleaned_data['nazwisko'],
+                'email': form.cleaned_data['email'],
+                'wiadomosc': form.cleaned_data['wiadomosc'],
+            }
+            message = "\n".join(body.values())
+
+            try:
+                send_mail(subject, message, 'blazej.kozikowski@gmail.com', ['blazej.kozikowski@gmail.com'])
+            except BadHeaderError:
+                return HttpResponse('Nieprawidłowy nagłówek.')
+            return redirect('/')
+
+    form = ContactFormPublic()
+    return render(request, "contact_public.html", {'form': form})
+
+
 
 
 @login_required
@@ -278,7 +309,8 @@ def reservation(request, id):
     samochod = Samochod.objects.get(pk=id)
     samochod.rezerwacja = True
     samochod.data_rezerwacji = datetime.now()
-    samochod.ilosc_dni_rezerwacji = 7
+    samochod.ilosc_dni_rezerwacji = request.POST.get('count_days')
+    samochod.uzytkownik = request.user
     samochod.save()
     return HttpResponse('Samochód został zarezerwowany')
   else:
@@ -290,6 +322,7 @@ def cancel_reservation(request, id):
   if request.method == 'POST':
       samochod = Samochod.objects.get(pk=id)
       samochod.rezerwacja = False
+      samochod.ilosc_dni_rezerwacji = 0
       samochod.save()
       return HttpResponse('Samochód został zarezerwowany')
   else:
@@ -302,8 +335,9 @@ def rent_a_car(request, id):
   if request.method == 'POST':
       form = RentCarForm(request.POST)
       samochod = Samochod.objects.get(pk=id)
-      # samochod.ilosc_dni_rezerwacji = liczbaDni
+      samochod.okresWynajecia = request.POST.get('count_days')
       samochod.czyWynajety = True
+      samochod.uzytkownik = request.user
       samochod.data_wynajecia = datetime.now()
       samochod.save()
       return HttpResponse('Samochód został zarezerwowany')
@@ -316,6 +350,7 @@ def end_rent_a_car(request, id):
   if request.method == 'POST':
       samochod = Samochod.objects.get(pk=id)
       samochod.czyWynajety = False
+      samochod.okresWynajecia = 0
       samochod.save()
       return HttpResponse('Koniec rezerwacji')
   else:
@@ -368,3 +403,4 @@ def car_save(request, id):
       return HttpResponse('Zmiany zapisane')
   else:
       return HttpResponse('Nieprawidłowe żądanie')
+

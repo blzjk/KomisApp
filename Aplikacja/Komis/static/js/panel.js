@@ -97,6 +97,38 @@ function carReservation(x) {
   }
 }
 
+function carRent(x) {
+  var id = x;
+  var buttonEndRentClassName = "";
+  if(div_search.className === "d-none"){
+    buttonEndRentClassName = "end_rent_"
+  }
+  else {
+    buttonEndRentClassName = "end_rent_search_"
+  }
+  button = document.getElementById(buttonEndRentClassName + id);
+  var xhr = new XMLHttpRequest();
+  if (button.className === 'btnHide btn btn-danger mt-1 col') {
+    xhr.open('POST', '/koniec_wynajmu/'+id);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        button.className = 'btnBook btn btn-secondary mt-1';
+        Swal.fire({
+          title: 'Info',
+          text: 'Wynajem został zakończony!',
+          icon: 'info',
+          confirmButtonText: 'OK'
+          })
+      }
+      else {
+        alert('Wystąpił błąd podczas zakończenia wynajmu');
+      }
+    };
+    xhr.send();
+  }
+}
+
 function searchVisible() {
   var button = document.getElementById("search_button");
   var div_search = document.getElementById("div_search")
@@ -170,7 +202,7 @@ function saveChanges(x){
     var xhr = new XMLHttpRequest();
     var str = document.getElementById(input_price_className + id);
     if(str !== null){
-        var input_price = parseFloat(str.value);
+        var input_price = parseFloat(str.value.replace(',','').replace(' ',''));
     }
     else {
         var input_price = 0;
@@ -178,7 +210,7 @@ function saveChanges(x){
 
     var str_rent = document.getElementById(input_price_rent_className + id)
     if(str_rent !== null){
-        var input_price_rent = parseFloat(str_rent.value);
+        var input_price_rent = parseFloat(str_rent.value.replace(',','.').replace(' ',''));
     }
     else {
         var input_price_rent = 0;

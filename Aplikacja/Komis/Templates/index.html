@@ -57,10 +57,17 @@
 								</a>
 							</li>
 							{% else %}
-							<li>
-								<a href="/kontakt" class="nav-link-1 w-nav-link">Kontakt</a>
-							</li>
+								{% if user.is_authenticated %}
+									<li>
+										<a href="/kontakt" class="nav-link-1 w-nav-link" title="Skontaktuj się z nami">Kontakt</a>
+									</li>
+								{% else %}
+									<li>
+										<a href="/kontakt_publiczny" class="nav-link-1 w-nav-link" title="Skontaktuj się z nami">Kontakt</a>
+									</li>
+								{% endif %}
 							{% endif %}
+
 
 							{% if user.is_authenticated %}
 							<li>

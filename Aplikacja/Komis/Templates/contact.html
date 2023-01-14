@@ -3,9 +3,10 @@
 
 {% block content %}
 <div class = "container">
+    {% include "multipla.html" %}
  <form  method="post">
 
-         <div class="form-group col-3 mx-auto">
+         <div class="form-group col-xl-3 col-lg-6 mx-auto">
          {% csrf_token %}
          {{ form|crispy }}
              <button type="submit" class="btn btn-primary mt-3 col-6">Wyślij</button>

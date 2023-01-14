@@ -18,16 +18,15 @@
 
         <form method="get" action="{% url 'szukaj' %}">
             {% for field in car_filter.form %}
-
-      {% if field.name == 'model' %}
-          {{ field|add_class:"form-control-lg"|as_crispy_field }}
-      {% elif field.field.widget.input_type == 'select' %}
-          {{ field|add_class:"form-control-sm"|add_class:"mt-1 "|as_crispy_field }}
-      {% else %}
-          {{ field|add_class:""|as_crispy_field }}
-      {% endif %}
-    {% endfor %}
-       <button class="btn btn-danger btn-sm mt-3 px-5 py-1" type="submit">Szukaj</button>
+              {% if field.name == 'model' %}
+                  {{ field|add_class:"form-control-lg"|as_crispy_field }}
+              {% elif field.field.widget.input_type == 'select' %}
+                  {{ field|add_class:"form-control-sm"|add_class:"mt-1 "|as_crispy_field }}
+              {% else %}
+                  {{ field|add_class:""|as_crispy_field }}
+              {% endif %}
+            {% endfor %}
+            <button class="btn btn-danger btn-sm mt-3 px-5 py-1" type="submit">Szukaj</button>
         </form>
         {% if has_filter %}
             <a href = "{% url 'szukaj' %}"><button class="btn btn-warning btn-sm mt-3 px-4 py-1 "> Wyczyść filtry </button></a>

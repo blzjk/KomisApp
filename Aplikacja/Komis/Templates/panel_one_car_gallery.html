@@ -1,7 +1,7 @@
 {% load humanize %}
 {% load static %}
 
-<div class="col mb-4">
+<div class="col mb-4 ">
         <div class="bg-white rounded shadow-sm text-center">
             <a href="/samochod/{{car.id}}/">
             <img src ='../media/{{car.foto}}' alt="" class="rounded mt-2" height="100px" max-width="100%" data-target="#image-gallery">
@@ -11,13 +11,9 @@
               <p>{{car.paliwo}} {{car.silnik}} {{car.kod_silnika|default_if_none:" "|upper}}</p>
               <div class="input-group mb-3">
                   {% if car.czyDoWynajecia == True %}
-                    {% if car.czyWynajety == True %}
-                    <div class="col">
-                      <button type="button" class="btnHide btn btn-danger mt-1 col" id="rent_{{car.id}}">Zakończ wynajem</button>
-                    </div>
-                    {% else %}
+                    {% if car.czyWynajety == False %}
                     <div class="input-group-prepend">
-                      <span class="input-group-text">Kosz wynajmu</span>
+                      <span class="input-group-text">Koszt</span>
                       </div>
                       <input type="text" class="form-control text-center" value = {{ car.kosztWynajmuZaDzien|intcomma }} id="price_rent_search_{{car.id}}">
                       <div class="input-group-append">
@@ -49,9 +45,7 @@
               {% endif %}
               {% if car.czyDoWynajecia == True %}
                     {% if car.czyWynajety == True %}
-                    <div class="col">
-                      <button type="button" class="btnHide btn btn-danger mt-1 col" id="end_rent_{{car.id}}">Zakończ wynajem</button>
-                    </div>
+                    <button type="button" class="btnHide btn btn-danger mt-1 col" id="end_rent_search_{{car.id}}" onclick="carRent({{car.id}})">Zakończ wynajem</button>
                     {% endif %}
               {% else %}
                   {% if car.rezerwacja == True and car.ilosc_dni_rezerwacji > 0 %}
@@ -63,9 +57,6 @@
 
 
             <button type="button" class="btnSave btn btn-secondary mt-1" id="save_search_{{car.id}}" onclick="saveChanges({{car.id}})">Zapisz</button>
-              <a class="btn btn-danger" id="delete_search_{{car.id}}" href="path/to/settings" aria-label="Delete">
-                  <i class="fa fa-trash-o" aria-hidden="true"></i>
-                </a>
           </div>
         </div>
       </div>
@@ -73,6 +64,5 @@
 {% block script %}
 <script src="{% static 'js/panel.js'%}"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="sweetalert2.all.min.js"></script>
 
 {% endblock %}
