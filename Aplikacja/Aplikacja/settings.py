@@ -41,7 +41,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-bgwrva_rq(!7cn1&w-9w0xgopdjbm=s(5!wb)cio^$s5mlmmqf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -94,6 +94,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
 ]
 
 ROOT_URLCONF = 'Aplikacja.urls'
@@ -199,3 +201,4 @@ if DEBUG:
 
 RECAPTCHA_PUBLIC_KEY = '6LeDPt8jAAAAAFxDMMBRp_f6DR828uwkiWS7qhoJ'
 RECAPTCHA_PRIVATE_KEY = '6LeDPt8jAAAAAGTXkTUWWhsbvE3BXPPuGkuePK7u'
+
