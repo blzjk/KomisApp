@@ -14,6 +14,7 @@ from pathlib import Path
 import django_heroku
 import dj_database_url
 from django.urls import reverse_lazy
+django_heroku.settings(locals())
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
