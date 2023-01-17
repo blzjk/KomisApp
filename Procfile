@@ -1,1 +1,1 @@
-web: gunicorn KomisApp.wsgi
+web: gunicorn Aplikacja.wsgi
