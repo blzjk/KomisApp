@@ -11,10 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
-import django_heroku
-import dj_database_url
+
 from django.urls import reverse_lazy
-django_heroku.settings(locals())
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -104,6 +102,7 @@ ROOT_URLCONF = 'Aplikacja.urls'
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'Templates')
 COMPONENTS_TEMP_DIR = os.path.join(BASE_DIR, 'Templates/Components')
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -184,7 +183,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT =  os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
-django_heroku.settings(locals())
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
