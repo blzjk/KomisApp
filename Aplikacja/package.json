@@ -1,8 +1,5 @@
 {
   "dependencies": {
     "jquery-datetimepicker": "^2.5.21"
-  },
-  "scripts": {
-   "start": "node server.js"
   }
 }
