@@ -14,6 +14,18 @@ from pathlib import Path
 
 from django.urls import reverse_lazy
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+    }
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -23,7 +35,7 @@ EMAIL_HOST_PASSWORD = 'pshlnclcrphgaczz'
 EMAIL_USE_TLS = True
 
 
-LOGIN_REDIRECT_URL = reverse_lazy('panel')
+LOGIN_REDIRECT_URL = reverse_lazy('index')
 LOGIN_URL = reverse_lazy('logowanie')
 LOGOUT_URL = reverse_lazy('account:logout')
 
@@ -69,6 +81,7 @@ INSTALLED_APPS = [
     'captcha',
 
 ]
+
 def FILTERS_VERBOSE_LOOKUPS():
     from django_filters.conf import DEFAULTS
 

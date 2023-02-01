@@ -68,19 +68,43 @@ function carReservation(x) {
   }
   var xhr = new XMLHttpRequest();
   if (button.className === 'btnNotBook btn btn-secondary mt-1') {
-    xhr.open('POST', '/rezerwacja/'+id);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        button.innerHTML = 'Rezerwacja';
-        button.className = 'btnBook btn btn-danger mt-1';
-      }
-      else {
-        alert('Wystąpił błąd podczas ukrywania samochodu');
-      }
-    };
-    xhr.send();
-  }
+    //tworzenie listy
+        let highEnd = 30;
+        let lowEnd = 0;
+        var arr = [];
+        c = highEnd - lowEnd + 1;
+        while ( c-- ) {
+         arr[c] = highEnd--
+        }
+ Swal.fire({
+      title: 'Na ile dni chcesz wynająć pojazd?',
+      input: 'select',
+
+      inputOptions: arr,
+      inputPlaceholder: 'Wybierz ilość dni',
+      showCancelButton: true,
+      cancelButtonText: 'Anuluj',
+      confirmButtonText: 'Zatwierdź',
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        var count = result.value;
+        xhr.open('POST', '/rezerwacja/'+id);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            button.innerHTML = 'Rezerwacja';
+            button.className = 'btnBook btn btn-danger mt-1';
+          }
+          else {
+            alert('Wystąpił błąd podczas procesu rezerwacji samochodu');
+          }
+        };
+        xhr.send(`count_days=${count}`);
+        }
+    })
+    }
   else {
     xhr.open('POST', '/koniec_rezerwacji/'+id);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -90,7 +114,7 @@ function carReservation(x) {
         button.className = 'btnNotBook btn btn-secondary mt-1';
       }
       else {
-        alert('Wystąpił błąd podczas włączania widoczności samochodu');
+        alert('Wystąpił błąd podczas odwoływania rezerwacji samochodu');
       }
     };
     xhr.send();

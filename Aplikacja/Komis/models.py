@@ -60,7 +60,7 @@ PALIWO = (
 SKRZYNIABIEGOW = (
 
     ('automatyczna', 'automatyczna'),
-    ('manualana', 'manualna')
+    ('manualna', 'manualna')
 )
 
 LICZBADRZWI = (

@@ -232,7 +232,7 @@ def contact_view(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            admin_address = "blazej.kozikowski@gmail.com"
+            admin_address = "autko.komis.online@gmail.com"
             responder_address = "komis.samochodowy.online@gmail.com"
             client_address = request.user.email
             auto = Samochod.objects.get(pk=request.POST['auto'])
@@ -281,7 +281,7 @@ def contact_public_view(request):
             message = "\n".join(body.values())
 
             try:
-                send_mail(subject, message, 'blazej.kozikowski@gmail.com', ['blazej.kozikowski@gmail.com'])
+                send_mail(subject, message, 'autko.komis.online@gmail.com', ['komis.samochodowy.online@gmail.com'])
             except BadHeaderError:
                 return HttpResponse('Nieprawidłowy nagłówek.')
             return redirect('/')
